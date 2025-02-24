@@ -28,60 +28,38 @@ contract BaguaDukiDaoContract is
     UnstoppableDukiDaoConstants,
     IUnstoppableDukiDao
 {
-    IMinUNSRegistry private unsRegistry;
-
     IERC20 private stableCoin;
 
-    uint256[9] s_baguaDaoBpsArr;
-
+    uint256[8] s_dao_bps_arr;
     // calculate total unit for each trigram dynamically
-    uint256[9] s_baguaDaoUnitCountArr;
+    uint256[8] s_dao_bps_count_arr;
 
     // each
-    uint256 public s_daoEvolveNum; // start from 0,  monotonic increasing step=1
+    uint256 public s_dao_bornSeconds; // the timestamp when the dao was created
+    uint256 public s_dao_evolve_step; // start from 0,  monotonic increasing step=1
+    uint256 public s_dao_evovle_block_num; // block number, monotonic increasing
+    DaoFairDrop[8] s_dao_fair_drop_arr;
 
-    uint256 public s_bornSeconds; // the timestamp when the dao was created
+    uint256 private s_dao_claimed_amount;
 
-    uint256 public s_daoEvolveBlockNum; // block number, monotonic increasing
-    uint256 public s_lotteryWinnerNumber; // the number of the lottery winner
+    uint256[3] s_lucky_community_participants;
 
-    DaoFairDrop[9] s_baguaDaoFairDropArr;
+    uint256 s_investment_3_fee;
 
-    uint256 private s_claimed_amount;
+    mapping(address => uint256 claimedEvolveNum) s_earth_0_founders;
 
-    // public love users
-    uint256 public s_subscription_yearly_fee; // 12 coin per year, may change later
-    uint256 public s_community_lottery_3_entry_fee;
-    uint256 public s_investment_6_fee;
+    mapping(address => uint256 claimedEvolveNum) s_mountain_1_maintainers;
 
-    // mapping(address => uint256 claimedEvolveNum) public s_alm_1_dukiClaimers; // requires hold unstoppable domains owner to be a unique human being, concept now; a user can claim using multiple domains now
-    mapping(uint256 => uint256 claimedEvolveNum) public s_alm_1_dukiClaimerDomains; // domains
+    mapping(address => uint256 claimedEvolveNum) s_water_2_investors;
 
-    // uint256 private s_lotteryParticipantTotal;
+    mapping(address => uint256 claimedEvolveNum) s_wind_3_contributors; //
+    mapping(address => uint256 claimedEvolveNum) s_thunder_4_duki_Builders;
 
-    // mapping(address => uint256 claimedEvolveNum) public s_nation_supporters; // all people inside one country
+    mapping(address => CommunityParticipation) s_community_5_Participants;
 
-    mapping(address => LotteryQualification) s_community_lottery_3_Participants;
+    mapping(address => uint256 claimedEvolveNum) s_alm_nation_6_supporters; // all people inside one country
 
-    mapping(address => uint256 claimedEvolveNum) s_unstoppable_4_duki_Builders;
-
-    mapping(address => uint256 claimedEvolveNum) s_wind_5_contributors;
-
-    // s_baguaDaoUnitCountArr records fair drop count, community are participants including subscribers,investors,maintainers except duki participants without other interactions
-    uint256 public s_unstoppableInvestorsCount; // < MaxLifetimeSupportersTotal limited lifetime uns user subscription
-
-    uint256 public s_unstoppableSubscriberCount; // normal uns user subscription, without limit
-
-    mapping(address => uint256 claimedEvolveNum) s_8_creators;
-
-    mapping(address => uint256 claimedEvolveNum) s_survival_7_Maintainers;
-
-    mapping(uint256 => uint256 claimedEvolveNum) s_6_domain_investors;
-
-    mapping(address => uint256 claimedEvolveNum) s_wind_xun5_contributors; //
-
-    //unstoppable domain subscription
-    mapping(uint256 => uint256) s_unstoppableSubscriptions; // normal uns tokenId, uint64.max means investment ,which is lifetime
+    mapping(address => uint256 claimedEvolveNum) s_alm_world_7_dukiClaimers; // requires hold unstoppable domains owner to be a unique human being, concept now; a user can claim using multiple domains now
 
     // Reserved storage slots for future upgrades
     // This ensures we can add new storage variables without corrupting existing storage layout
@@ -96,98 +74,45 @@ contract BaguaDukiDaoContract is
         __UUPSUpgradeable_init();
         __Ownable_init(msg.sender);
 
-        s_subscription_yearly_fee = Initial_Subscription_Yearly_Fee;
-        s_community_lottery_3_entry_fee = Initial_Lottery_Entry_Fee;
-        s_investment_6_fee = Initial_Investment_Fee;
-        s_daoEvolveNum = 0; // initial 0,  monotonic increasing
-        s_daoEvolveBlockNum = 0; // 0 means not evolve yet, when evolved, it becomes block.number;
-        s_bornSeconds = block.timestamp;
+        s_investment_3_fee = 1000 * ONE_DOLLAR_BASE;
+        s_dao_evolve_step = 0; // initial 0,  monotonic increasing
+        s_dao_evovle_block_num = 0; // 0 means not evolve yet, when evolved, it becomes block.number;
+        s_dao_bornSeconds = block.timestamp;
 
         stableCoin = IERC20(config.stableCoin);
 
-        s_baguaDaoBpsArr = [
-            BPS_PRECISION, // AllLivesMatter.World
-            Initial_1_MIN_DukiInAction_Bps, // DUKI for all - empower all to reject evil, do good and be love
-            Initial_Zero,
-            Initial_2_Community_Lottery_Bps, // All lives matter need all lives matter, bootstrap loop; may decress to 10% time gos on
-            Initial_Zero, //   builders
-            Initial_Zero, //   maybe setup a account for @kinteh_mod8017
-            Initial_6_Investors_Bps, // be love - reject evil, do good, needs power
-            Initial_7_SurvivalMaintainers_Bps, // without survival, there is no existence, no story, no life, no death, no love, no dao related to creation
-            Initial_8_Creators_Bps // dao is love -- love be ye way to create sth from void
+        s_dao_bps_arr = [
+            Initial_0_Founders_Bps,
+            Initial_1_Maintainers_Bps,
+            Initial_2_Investors_Bps,
+            Initial_3_Contributors_Bps,
+            Initial_4_Builders_Bps,
+            Initial_5_Community_Bps,
+            Initial_6_ALM_Nation_DukiInAction_Bps, // DUKI for all - empower all to reject evil, do good and be love
+            Initial_7_ALM_World_DukiInAction_Bps // DUKI for all - empower all to reject evil, do good and be love
         ];
 
         // 1. Validate and set shares
         for (uint256 i = 0; i < config.creators.length; i++) {
             if (config.creators[i] == address(0)) revert ZeroAddressError();
-            s_8_creators[config.creators[i]] = Initial_Claim_FairDrop_Round;
+            s_earth_0_founders[config.creators[i]] = Initial_Claim_FairDrop_Round;
         }
 
-        s_baguaDaoUnitCountArr[SEQ_8_Earth_Creators] = config.creators.length;
+        s_dao_bps_count_arr[SEQ_0_Earth_Founders] = config.creators.length;
 
-        uint256[9] memory emptyArr;
-
+        uint256[8] memory emptyArr;
         for (uint256 i = 0; i < config.maintainers.length; i++) {
             if (config.maintainers[i] == address(0)) revert ZeroAddressError();
-            s_survival_7_Maintainers[config.maintainers[i]] = Initial_Claim_FairDrop_Round;
+            s_mountain_1_maintainers[config.maintainers[i]] = Initial_Claim_FairDrop_Round;
         }
+        s_dao_bps_count_arr[SEQ_1_Mountain_Maintainers] = config.maintainers.length;
 
-        s_baguaDaoUnitCountArr[SEQ_7_Mountain_Maintainers] = config.maintainers.length;
-
-        emit BaguaDukiDaoBpsChanged(emptyArr, s_baguaDaoBpsArr, block.timestamp);
+        emit BaguaDukiDaoBpsChanged(emptyArr, s_dao_bps_arr, block.timestamp);
     }
 
     // Authorization function for contract upgrades
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {
         require(newImplementation != address(0), "New implementation cannot be zero address");
-    }
-
-    function updateBaguaDaoBps(uint256[9] calldata newDaoBpsArr) public {
-        uint256 total = 0;
-        for (uint256 i = 1; i <= 9; i++) {
-            total += newDaoBpsArr[i];
-        }
-        if (total != BPS_PRECISION && newDaoBpsArr[0] != total) {
-            revert BpsSumError();
-        }
-
-        // guard from change it too small
-        if (newDaoBpsArr[SEQ_1_Heaven_ALM_DukiInAction] < MIN_DukiInAction_Bps) {
-            revert BpsTooSmallViolationError();
-        }
-
-        if (newDaoBpsArr[SEQ_3_Fire_Community] < Min_Community_Lottery_Bps) {
-            revert BpsTooSmallViolationError();
-        }
-
-        if (newDaoBpsArr[SEQ_6_Water_Investors] < Min_Investors_Bps) {
-            revert BpsTooSmallViolationError();
-        }
-
-        if (newDaoBpsArr[SEQ_7_Mountain_Maintainers] < Min_SurvivalMaintainers_Bps) {
-            revert BpsTooSmallViolationError();
-        }
-
-        // guard from change it too large
-        if (newDaoBpsArr[SEQ_8_Earth_Creators] > Max_Creators_Bps) {
-            revert BpsTooLargeViolationError();
-        }
-
-        // protect investors , lifetime subscription and dukiInAction , maybe just trust me for the present
-        uint256[9] memory oldBaguaBpsShares = newDaoBpsArr;
-        s_baguaDaoBpsArr = newDaoBpsArr;
-        // Emit events
-        emit BaguaDukiDaoBpsChanged(oldBaguaBpsShares, s_baguaDaoBpsArr, block.timestamp);
-    }
-
-    modifier mustBeUnstoppableDomain(string memory label) {
-        if (LibString.startsWith(label, UNS_TEST_DOMAIN)) {
-            revert UnsTestDomainError();
-        }
-        if (LibString.contains(label, ".")) {
-            revert UnsSubDomainForbidden();
-        }
-        _;
     }
 
     function totalStableCoin() external view override returns (uint256) {
@@ -198,85 +123,55 @@ contract BaguaDukiDaoContract is
         return address(stableCoin);
     }
 
-    function uniRegistryAddress() external view returns (address) {
-        return address(unsRegistry);
+    function baguaDaoUnitCountArr() external view override returns (uint256[8] memory) {
+        return s_dao_bps_count_arr;
     }
 
-    function lotteryQualification(address user) external view override returns (LotteryQualification memory) {
-        return s_community_lottery_3_Participants[user];
+    function baguaDaoFairDropArr() external view override returns (DaoFairDrop[8] memory) {
+        return s_dao_fair_drop_arr;
     }
 
-    function baguaDaoUnitCountArr() external view override returns (uint256[9] memory) {
-        return s_baguaDaoUnitCountArr;
+    function baguaDaoBpsArr() external view override returns (uint256[8] memory) {
+        return s_dao_bps_arr;
     }
 
-    function baguaDaoFairDropArr() external view override returns (DaoFairDrop[9] memory) {
-        return s_baguaDaoFairDropArr;
-    }
+    function buaguaDaoAgg4Me(address user) external view override returns (BaguaDaoAgg memory) {
+        uint256 curEvolveBlockNum = s_dao_evovle_block_num;
 
-    function baguaDaoBpsArr() external view override returns (uint256[9] memory) {
-        return s_baguaDaoBpsArr;
-    }
-
-    function expireSecondsOfSubscription(string calldata uns_domain) external view returns (uint256) {
-        uint256 uns_domain_token = uns_domain_to_token(uns_domain);
-        return s_unstoppableSubscriptions[uns_domain_token];
-    }
-
-    function buaguaDaoAgg4Me(address user, string calldata uns_domain)
-        external
-        view
-        override
-        returns (BaguaDaoAgg memory)
-    {
-        uint256 curEvolveBlockNum = s_daoEvolveBlockNum;
-
-        // if uns_domain 's length = 0, it means the caller is not an unstoppable domain owner
         bool almQualified = true;
-        bool unsDomainIsEmpty = bytes(uns_domain).length == 0;
         bool investorClaimedQualified = false;
-        uint256 subscriptionExpireSeconds = 0;
 
-        uint256[9] memory claimedRoundArr;
-        claimedRoundArr[0] = s_daoEvolveBlockNum;
+        CommunityParticipation memory participation = s_community_5_Participants[user];
 
-        if (!unsDomainIsEmpty) {
-            uint256 uns_domain_token = uns_domain_to_token(uns_domain);
-            subscriptionExpireSeconds = s_unstoppableSubscriptions[uns_domain_token];
-            // almQualified = almClaimedRound < curEvolveBlockNum;
-            claimedRoundArr[1] = s_alm_1_dukiClaimerDomains[uns_domain_token];
-            claimedRoundArr[5] = s_6_domain_investors[uns_domain_token];
-        }
+        uint256[8] memory userClaimedRoundArr = [
+            s_earth_0_founders[user],
+            s_mountain_1_maintainers[user],
+            s_water_2_investors[user],
+            s_wind_3_contributors[user],
+            s_thunder_4_duki_Builders[user],
+            participation.participantNo,
+            s_alm_nation_6_supporters[user],
+            s_alm_world_7_dukiClaimers[user]
+        ];
 
-        LotteryQualification memory qualification = s_community_lottery_3_Participants[user];
-        claimedRoundArr[3] = qualification.claimedRound;
-
-        uint256 lotteryWinnerNumber = s_baguaDaoFairDropArr[0].unitNumber;
-
-        if (user != address(0)) {
-            claimedRoundArr[4] = s_unstoppable_4_duki_Builders[user];
-            claimedRoundArr[5] = s_wind_5_contributors[user];
-            claimedRoundArr[7] = s_survival_7_Maintainers[user];
-            claimedRoundArr[8] = s_8_creators[user];
-        }
+        uint256 lotteryWinnerNumber = s_dao_fair_drop_arr[0].unitNumber;
 
         return BaguaDaoAgg(
-            s_bornSeconds,
-            subscriptionExpireSeconds,
-            s_lotteryWinnerNumber,
-            qualification.participantNum,
-            s_claimed_amount,
-            claimedRoundArr,
-            s_baguaDaoBpsArr,
-            s_baguaDaoUnitCountArr,
-            s_baguaDaoFairDropArr
+            s_dao_bornSeconds,
+            s_dao_claimed_amount,
+            s_dao_bps_arr,
+            s_dao_bps_count_arr,
+            s_dao_fair_drop_arr,
+            s_lucky_community_participants,
+            userClaimedRoundArr,
+            participation.participantNo
         );
     }
 
     /**
      * daoDistribution
      */
-    function evolveDaoThenDistribute(uint32 lotteryWinnerNumber) external returns (bool, uint256) {
+    function evolveDaoAndDivideLove(uint32 communityLuckyReminderNumber) external returns (bool, uint256) {
         // CHECKS
         uint256 balance = stableCoin.balanceOf(address(this));
 
@@ -284,51 +179,61 @@ contract BaguaDukiDaoContract is
             console2.log(
                 "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
             );
-            return (false, s_daoEvolveBlockNum);
+            return (false, s_dao_evovle_block_num);
         }
 
         uint256 distributionAmount = balance - DAO_EVOLVE_LEFT_AMOUNT;
 
+        // s_lucky_community_participants = [communityLuckyReminderNumber, 0, 0];
         // EFFECTS
-        s_daoEvolveNum += 1;
-        s_daoEvolveBlockNum = block.number;
-        s_lotteryWinnerNumber = lotteryWinnerNumber;
+        s_dao_evolve_step += 1;
+        s_dao_evovle_block_num = block.number;
 
-        DaoFairDrop[9] memory daoFairDrops;
-        daoFairDrops[0] = DaoFairDrop(distributionAmount, s_daoEvolveNum, block.number);
-
+        DaoFairDrop[8] memory daoFairDrops;
         //  dukiInAction
-        uint256[9] memory bpsUnitNumArr = s_baguaDaoUnitCountArr;
+        uint256[8] memory bpsUnitNumArr = s_dao_bps_count_arr;
 
         // iterate over baguaDaoUnitTotals
-        for (uint256 i = 1; i < s_baguaDaoFairDropArr.length; i++) {
-            uint256 bpsAmount = (s_baguaDaoBpsArr[i] * distributionAmount) / BPS_PRECISION;
-
+        for (uint256 i = 0; i < 8; i++) {
+            uint256 bpsAmount = (s_dao_bps_arr[i] * distributionAmount) / BPS_PRECISION;
             uint256 bpsUnitNum = bpsUnitNumArr[i];
 
-            if (SEQ_1_Heaven_ALM_DukiInAction == i) {
-                uint256 almUnitTotalNum = bpsUnitNum + Alm_DukiInAction_StepIncr_Num;
-                uint256 almUnitAmount = bpsAmount / almUnitTotalNum;
-                if (almUnitAmount < Min_StableCoin_Claim_Amount) {
-                    almUnitAmount = Min_StableCoin_Claim_Amount;
-                    almUnitTotalNum = bpsAmount / almUnitAmount;
-                }
-                daoFairDrops[i] = DaoFairDrop(almUnitAmount, almUnitTotalNum, almUnitTotalNum);
-            } else if (SEQ_3_Fire_Community == i) {
+            if (SEQ_7_DukiInAction_ALM_World == i) {
+                uint256 almUnitTotalNum = bpsAmount / DukiInAction_StableCoin_Claim_Amount;
+                daoFairDrops[i] = DaoFairDrop(DukiInAction_StableCoin_Claim_Amount, almUnitTotalNum, almUnitTotalNum);
+            } else if (SEQ_5_Community_Participants == i) {
                 if (bpsUnitNum == 0) {
+                    // no one join the community , sad story
                     continue;
                 }
 
                 // lottery for community
-                uint256 lotteryUsersNum = s_baguaDaoUnitCountArr[SEQ_3_Fire_Community];
-                uint256 reminderNum = lotteryUsersNum % MaxLotteryParticipantNumber;
-                uint256 unitTotalNum =
-                    (lotteryUsersNum / MaxLotteryParticipantNumber) + (lotteryWinnerNumber <= reminderNum ? 1 : 0);
-                if (unitTotalNum > Max_Lottery_Winner_Per_Round) {
-                    unitTotalNum = Max_Lottery_Winner_Per_Round;
+                uint256 communityUsersCount = s_dao_bps_count_arr[SEQ_5_Community_Participants];
+                uint256 reminderNum = communityUsersCount % LotteryMaxLuckyNumber; // 40
+                uint256 unitTotalNum = communityUsersCount / LotteryMaxLuckyNumber; // 0
+
+                // Initialize array for lucky participants
+                uint256[3] memory luckyParticipants;
+
+                // Calculate first possible winner number
+                // ((communityLuckyReminderNumber <= reminderNum ? 1 : 0) + unitTotalNum)
+                uint256 maxWinnerNum = unitTotalNum * LotteryMaxLuckyNumber + communityLuckyReminderNumber;
+
+                // Add subsequent winner numbers (MaxLotteryParticipantNumber apart)
+                uint256 luckyCount = 0;
+                for (uint256 j = 0; j < 3; j++) {
+                    uint256 nextWinnerNum = maxWinnerNum - (j * LotteryMaxLuckyNumber);
+                    if (nextWinnerNum <= 0) {
+                        luckyParticipants[luckyCount] = 0;
+                        continue;
+                    }
+                    luckyParticipants[luckyCount] = nextWinnerNum;
+                    luckyCount++;
                 }
-                uint256 unitAmount = bpsAmount / unitTotalNum;
-                daoFairDrops[i] = DaoFairDrop(unitAmount, unitTotalNum, unitTotalNum);
+
+                uint256 unitAmount = bpsAmount / luckyCount; // luckyCount > 0
+                daoFairDrops[i] = DaoFairDrop(unitAmount, luckyCount, unitTotalNum);
+                s_lucky_community_participants = luckyParticipants;
             } else {
                 if (bpsUnitNum == 0) {
                     continue;
@@ -340,208 +245,96 @@ contract BaguaDukiDaoContract is
 
         // Set the values in batch
         for (uint256 i = 0; i < daoFairDrops.length; i++) {
-            s_baguaDaoFairDropArr[i] = daoFairDrops[i];
+            s_dao_fair_drop_arr[i] = daoFairDrops[i];
         }
 
-        emit DukiDaoEvolution(s_daoEvolveBlockNum, lotteryWinnerNumber, daoFairDrops, block.timestamp);
-        return (true, s_daoEvolveNum);
-    }
-
-    function uns_domain_to_token(string calldata uns_domain) internal view returns (uint256) {
-        string[] memory uns_domain_labels = new string[](2);
-        uns_domain_labels[0] = uns_domain;
-        uns_domain_labels[1] = UNS_TLD;
-        return unsRegistry.namehash(uns_domain_labels);
-    }
-
-    function validateAndConvertUnsDomain(string calldata uns_domain, address uns_domain_owner)
-        internal
-        view
-        mustBeUnstoppableDomain(uns_domain)
-        returns (uint256)
-    {
-        uint256 uns_domain_token = uns_domain_to_token(uns_domain);
-        address token_owner = unsRegistry.ownerOf(uns_domain_token);
-        if (token_owner != uns_domain_owner) {
-            console2.log("msgSender,token_owner is ", uns_domain_owner, token_owner);
-            revert NotUnsDomainOwnerError();
-        }
-
-        return uns_domain_token;
+        emit DukiDaoEvolution(s_dao_evovle_block_num, s_lucky_community_participants, daoFairDrops, block.timestamp);
+        return (true, s_dao_evolve_step);
     }
 
     /**
      *
-     * @param uns_domain unstoppable domain name, e.g. "kindkang.unstoppable", use kindkang only
-     * @param _subYears  the number of years to subscribe ; when value = 0, it means invest lifetime subscription
      */
-    function payToSubscribe(string calldata uns_domain, uint32 _subYears) external {
-        // Interactions
-        // coin transfer
-        // function allowance(address owner, address spender) external view returns (uint256);
+    function payLoveIntoDao(
+        string calldata willMessage,
+        string calldata willSignature,
+        uint256 willDivinationResult,
+        uint256 loveAsMoneyAmount
+    ) external {
         // CHECKS
         if (msg.sender == address(0)) {
             revert ZeroAddressError();
         }
-        if (_subYears < 1) {
-            revert SubscriptionYearsInvalid();
+
+        // money must amount must > 0
+        if (loveAsMoneyAmount <= 0) {
+            revert LoveAsMoneyIntoDaoRequired();
         }
-
-        uint256 uns_domain_token = validateAndConvertUnsDomain(uns_domain, msg.sender);
-        // check if the subscription already exists
-        if (s_unstoppableSubscriptions[uns_domain_token] != 0) {
-            console2.log("uns_domain_token exists -> SubscriptionExistsError");
-            revert SubscriptionExistsError();
-        }
-
-        // uint256 subscription_required_coin = Lifetime_Subscription_Represent_Value;
-        // uint256 expireTimeSeconds = LIFE_TIME_EXPIRE_SECONDS;
-        uint256 subscription_required_coin = _subYears * s_subscription_yearly_fee;
-        console2.log("sub fees=yearly_fee*years = ", s_subscription_yearly_fee, _subYears, subscription_required_coin);
-        uint256 expireTimeSeconds = block.timestamp + (_subYears * 365 days);
-
-        // if (isLifetimeSubscription) {
-        //   expireTime = LIFE_TIME_EXPIRE_SECONDS;
-        //   // EFFECTS
-        //   s_unstoppableSubscriptions[uns_domain_token] = expireTimeSeconds;
-        //   s_unstoppableInvestorsCount += 1;
-        // } else {
-        //   s_unstoppableSubscriberCount += 1;
+        // check the signature using erc_recover
+        // address signer = ecrecover(willMessage, willSignature, willDivinationResult);
+        // if (signer != msg.sender) {
+        //     revert InvalidSignature();
         // }
-
         // EFFECTS
-        s_unstoppableSubscriberCount += 1;
-        s_unstoppableSubscriptions[uns_domain_token] = expireTimeSeconds;
-
-        addToCommunityForLottery();
-
-        commonDeductFee(InteractType.In_To_Create_Subscription, subscription_required_coin, _subYears, uns_domain);
-    }
-
-    function isStructExist(LotteryQualification memory qualification) internal pure returns (bool) {
-        return qualification.participantNum > 0;
-    }
-
-    function payToExtend(string calldata uns_domain, uint32 _extendYears)
-        external
-        mustBeUnstoppableDomain(uns_domain)
-    {
-        if (_extendYears < 1) {
-            revert SubscriptionYearsInvalid();
+        // user first join the community
+        if (s_community_5_Participants[msg.sender].participantNo <= 0) {
+            s_dao_bps_count_arr[SEQ_5_Community_Participants] += 1;
+            s_community_5_Participants[msg.sender] =
+                CommunityParticipation(block.number, s_dao_bps_count_arr[SEQ_5_Community_Participants]);
         }
-
-        uint256 uns_domain_token = validateAndConvertUnsDomain(uns_domain, msg.sender);
-
-        uint256 expireSeconds = s_unstoppableSubscriptions[uns_domain_token];
-
-        if (expireSeconds == 0) {
-            revert SubscriptionNotExist();
-        }
-
-        if (expireSeconds == LIFE_TIME_EXPIRE_SECONDS) {
-            revert NoNeedExtendLifetimeSubscription();
-        }
-
-        if (expireSeconds < block.timestamp) {
-            expireSeconds = block.timestamp;
-        }
-
-        // Add subscription time
-        uint256 newExpireSeconds = expireSeconds + (_extendYears * 365 days);
-
-        // Store the new expiration
-        s_unstoppableSubscriptions[uns_domain_token] = newExpireSeconds;
-
-        uint256 subscription_required_coin = _extendYears * s_subscription_yearly_fee;
-
-        // uint256 allowanceMoney = stableCoin.allowance(msg.sender, address(this));
-        // if (allowanceMoney < subscription_required_coin) {
-        //   revert InsufficientAllowance(
-        //     CoinReceiveType.Extend_Subscription,
-        //     msg.sender,
-        //     subscription_required_coin
-        //   );
-        // }
-
-        s_unstoppableSubscriptions[uns_domain_token] = newExpireSeconds;
-
-        commonDeductFee(InteractType.In_To_Extend_Subscription, subscription_required_coin, _extendYears, uns_domain);
-    }
-
-    function addToCommunityForLottery() internal returns (bool) {
-        if (s_community_lottery_3_Participants[msg.sender].participantNum > 0) {
-            return false;
-        }
-
-        s_baguaDaoUnitCountArr[SEQ_3_Fire_Community] += 1;
-        s_community_lottery_3_Participants[msg.sender] =
-            LotteryQualification(block.number, s_baguaDaoUnitCountArr[SEQ_3_Fire_Community]);
+        // FIXME: emit event
         // emit CommunityLotteryEntry(
         //   msg.sender, bonusEntry, s_baguaDaoUnitCountArr[SEQ_3_Fire_Community]
         // );
-        return true;
+        commonDeductFee(InteractType.In_To_Divine, loveAsMoneyAmount);
     }
 
-    function payToJoinCommunityAndLottery() external {
-        bool added = addToCommunityForLottery();
-        if (!added) {
-            revert AlreadyEnteredLottery();
-        }
-        commonDeductFee(InteractType.In_To_Community_Lottery, s_community_lottery_3_entry_fee, 1, "");
+    function isStructExist(CommunityParticipation memory qualification) internal pure returns (bool) {
+        return qualification.participantNo > 0;
     }
 
     /**
      * a way to support, at least 10% of the total project revenue will be shared with the investors
      */
-    function payToInvestUnsInLimo(string calldata uns_domain) external override mustBeUnstoppableDomain(uns_domain) {
-        uint256 uns_domain_token = validateAndConvertUnsDomain(uns_domain, msg.sender);
-
+    function payToInvest() external {
         // CHECKS
-        if (s_baguaDaoUnitCountArr[SEQ_6_Water_Investors] > MaxInvestorsTotal) {
+        if (s_dao_bps_count_arr[SEQ_2_Water_Investors] > MaxInvestorsTotal) {
             revert InvestorsFull();
         }
 
-        if (s_6_domain_investors[uns_domain_token] >= Initial_Evolve_Base_Num) {
+        if (s_water_2_investors[msg.sender] >= Initial_Evolve_Base_Num) {
             revert AlreadyInvested();
         }
 
         // EFFECTS
-        s_baguaDaoUnitCountArr[SEQ_6_Water_Investors] += 1;
-        s_6_domain_investors[uns_domain_token] = block.number;
-
-        // @dev use could be an subscriber before, now upgrade becomes an investor,
-        // . but no money back for previous subscription , lottery qualification still keeps
-        s_unstoppableSubscriptions[uns_domain_token] = LIFE_TIME_EXPIRE_SECONDS;
+        s_dao_bps_count_arr[SEQ_2_Water_Investors] += 1;
+        s_water_2_investors[msg.sender] = block.number;
 
         // INTERACTIONS
-        commonDeductFee(InteractType.In_To_Invest_Unstoppable_Domain, s_investment_6_fee, 1, uns_domain);
+        commonDeductFee(InteractType.In_To_Invest, BASIC_INVEST_AMOUNT);
 
-        // emit InvestorAdded(
-        //   msg.sender, s_baguaDaoUnitCountArr[SEQ_6_Water_Investors]
-        // );
+        // FIXME: emit event
+        // emit InvestorAdded(msg.sender, s_dao_bps_count_arr[SEQ_2_Water_Investors]);
     }
 
     /**
      *
-     * @param uns_domain the unstoppable domain name, e.g. "kindkang.unstoppable", use kindkang only
      */
-    function claim1_AlmDukiInActionFairDrop(string calldata uns_domain) external mustBeUnstoppableDomain(uns_domain) {
+    function claim1Love_WorldDukiInActionFairDrop() external {
         // CHECKS
 
-        uint256 uns_domain_token = validateAndConvertUnsDomain(uns_domain, msg.sender);
-
-        uint256 domainClaimedEvolveNum = s_alm_1_dukiClaimerDomains[uns_domain_token];
-        if (domainClaimedEvolveNum >= s_daoEvolveBlockNum) {
+        uint256 domainClaimedEvolveNum = s_alm_world_7_dukiClaimers[msg.sender];
+        if (domainClaimedEvolveNum >= s_dao_evovle_block_num) {
             console2.log(
                 "claim1_AlmDukiInActionFairDrop already claimed",
                 msg.sender,
                 domainClaimedEvolveNum,
-                s_daoEvolveBlockNum
+                s_dao_evovle_block_num
             );
             revert ClaimedCurrentRoundAlreadyError();
         }
 
-        DaoFairDrop storage fairDrop = s_baguaDaoFairDropArr[SEQ_1_Heaven_ALM_DukiInAction];
+        DaoFairDrop storage fairDrop = s_dao_fair_drop_arr[SEQ_7_DukiInAction_ALM_World];
 
         if (fairDrop.unitNumber <= 0) {
             console2.log("claim1_AlmDukiInActionFairDrop no distribution unit left", msg.sender);
@@ -549,66 +342,76 @@ contract BaguaDukiDaoContract is
         }
 
         // EFFECTS
-        s_alm_1_dukiClaimerDomains[uns_domain_token] = s_daoEvolveBlockNum;
+        s_alm_world_7_dukiClaimers[msg.sender] = s_dao_evovle_block_num;
         fairDrop.unitNumber -= 1;
-        s_baguaDaoUnitCountArr[SEQ_1_Heaven_ALM_DukiInAction] += 1; // no use ,just for stats
+        s_dao_claimed_amount += fairDrop.unitAmount;
 
-        s_claimed_amount += fairDrop.unitAmount;
         // INTERACTIONS
         bool success = stableCoin.transfer(msg.sender, fairDrop.unitAmount);
         if (!success) {
             revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
         }
+        //  address user;
+        // InteractType interactType;
+        // uint256 daoEvolveNum;
+        // uint256 amount;
+        // uint256 unitNumber;
 
-        emit UnstoppableEvent(
+        emit DukiInActionEvent(
             msg.sender,
-            s_daoEvolveNum,
-            InteractType.Out_Claim1_As_Duki4World,
+            InteractType.Out_Claim_As_Duki4World,
+            s_dao_evolve_step,
             fairDrop.unitAmount,
             fairDrop.unitNumber,
-            uns_domain,
             block.timestamp
         );
     }
 
-    /**
-     */
-    function claim3_CommunityLotteryDrop() external {
+    function claim2Love_NationDukiInActionFairDrop() external {
+        revert NotSupported("maybe we need government to back zkp human proof for all this duki in action");
+    }
+
+    function claim3Love_CommunityLotteryFairDrop() external {
         // CHECKS
-        LotteryQualification storage qualification = s_community_lottery_3_Participants[msg.sender];
+        CommunityParticipation memory participation = s_community_5_Participants[msg.sender];
 
-        if (qualification.participantNum == 0) {
+        if (participation.participantNo == 0) {
             console2.log("claim3_CommunityLotteryDrop not in lottery community", msg.sender);
-            revert NotInLottery();
-        }
-        DaoFairDrop memory dropSummary = s_baguaDaoFairDropArr[SEQ_0_FAIR_DROP_SUMMARY];
-        uint256 winnerNumber = dropSummary.unitNumber;
-        uint256 participantWinNumber = qualification.participantNum % MaxLotteryParticipantNumber;
-
-        if (winnerNumber != participantWinNumber) {
-            console2.log("claim3_CommunityLotteryDrop not winner", msg.sender, winnerNumber, participantWinNumber);
-            revert NotLotteryWinner();
+            revert NotCommunityParticipant();
         }
 
-        if (qualification.claimedRound == s_daoEvolveBlockNum) {
+        uint256[3] memory luckyParticipantNoList = s_lucky_community_participants;
+
+        if (
+            participation.participantNo != luckyParticipantNoList[0]
+                || participation.participantNo != luckyParticipantNoList[1]
+                || participation.participantNo != luckyParticipantNoList[2]
+        ) {
+            // console2.log(
+            //     "claim3_CommunityLotteryDrop not winner",
+            //     msg.sender,
+            //     luckyParticipantNoList,
+            //     participation.participantNo
+            // );
+            revert NotCommunityLotteryWinner();
+        }
+
+        if (participation.claimedRound == s_dao_evovle_block_num) {
             console2.log(
                 "claim3_CommunityLotteryDrop already claimed",
                 msg.sender,
-                qualification.claimedRound,
-                s_daoEvolveBlockNum
+                participation.claimedRound,
+                s_dao_evovle_block_num
             );
             revert ClaimedCurrentRoundAlreadyError();
         }
-
-        DaoFairDrop storage fairDrop = s_baguaDaoFairDropArr[SEQ_3_Fire_Community];
-        if (fairDrop.unitNumber == 0) {
-            revert NoDistributionUnitLeft();
-        }
-
+        DaoFairDrop memory fairDrop = s_dao_fair_drop_arr[SEQ_5_Community_Participants];
         // EFFECTS
-        fairDrop.unitNumber -= 1;
-        qualification.claimedRound = s_daoEvolveBlockNum;
-        s_claimed_amount += fairDrop.unitAmount;
+        // dropSummary.unitNumber -= 1;
+        // participation.claimedRound = s_dao_evovle_block_num;
+        s_dao_fair_drop_arr[SEQ_5_Community_Participants].unitNumber -= 1;
+        s_community_5_Participants[msg.sender].claimedRound = s_dao_evovle_block_num;
+        s_dao_claimed_amount += fairDrop.unitAmount;
 
         // INTERACTIONS
         bool success = stableCoin.transfer(msg.sender, fairDrop.unitAmount);
@@ -617,71 +420,34 @@ contract BaguaDukiDaoContract is
         }
         console2.log("claim3_CommunityLotteryDrop", msg.sender, fairDrop.unitAmount);
 
-        emit UnstoppableEvent(
+        emit DukiInActionEvent(
             msg.sender,
-            s_daoEvolveBlockNum,
-            InteractType.Out_Claim3_As_CommunityStar,
+            InteractType.Out_Claim_As_CommunityLottery,
+            s_dao_evovle_block_num,
             fairDrop.unitAmount,
             1,
-            "",
             block.timestamp
         );
     }
 
-    function claim4_BuilderFairDrop() external {
-        common_claim(InteractType.Out_Claim4_As_Builder, SEQ_4_Thunder_Builders, s_unstoppable_4_duki_Builders);
+    function claim4Love_BuilderFairDrop() external {
+        common_claim(InteractType.Out_Claim_As_Builder, SEQ_4_Thunder_DukiBuilders, s_thunder_4_duki_Builders);
     }
 
-    function claim5_ContributorFairDrop() external {
-        common_claim(InteractType.Out_Claim5_As_Contributor, SEQ_5_Wind_Contributors, s_wind_5_contributors);
+    function claim5Love_ContributorFairDrop() external {
+        common_claim(InteractType.Out_Claim_As_Contributor, SEQ_3_Wind_Contributors, s_wind_3_contributors);
     }
 
-    function claim6_UnsInvestorFairDrop(string calldata uns_domain) external mustBeUnstoppableDomain(uns_domain) {
-        uint256 uns_domain_token = validateAndConvertUnsDomain(uns_domain, msg.sender);
-
-        uint256 claimedRound = s_6_domain_investors[uns_domain_token];
-
-        if (claimedRound < Initial_Evolve_Base_Num) {
-            console2.log("claim6_UnsInvestorFairDrop is not investor", msg.sender);
-            revert ClaimDoNotHaveRole(Trigram.Water_Kan_6_Investors);
-        }
-
-        if (claimedRound >= s_daoEvolveBlockNum) {
-            console2.log("claim6_UnsInvestorFairDrop already claimed", msg.sender, claimedRound, s_daoEvolveBlockNum);
-            revert ClaimedCurrentRoundAlreadyError();
-        }
-
-        // EFFECTS
-        DaoFairDrop storage fairDrop = s_baguaDaoFairDropArr[SEQ_6_Water_Investors];
-        fairDrop.unitNumber -= 1;
-        s_6_domain_investors[uns_domain_token] = s_daoEvolveBlockNum;
-        s_claimed_amount += fairDrop.unitAmount;
-
-        // INTERACTIONS
-        bool success = stableCoin.transfer(msg.sender, fairDrop.unitAmount);
-        if (!success) {
-            revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
-        }
-
-        console2.log("claim6_UnsInvestorFairDrop", msg.sender, fairDrop.unitAmount, fairDrop.unitNumber);
-
-        emit UnstoppableEvent(
-            msg.sender,
-            s_daoEvolveBlockNum,
-            InteractType.Out_Claim6_As_Investor,
-            fairDrop.unitAmount,
-            1,
-            "",
-            block.timestamp
-        );
+    function claim6Love_InvestorFairDrop() external {
+        common_claim(InteractType.Out_Claim_As_Investor, SEQ_2_Water_Investors, s_water_2_investors);
     }
 
-    function claim7_MaintainerFairDrop() external {
-        common_claim(InteractType.Out_Claim7_As_Maintainer, SEQ_7_Mountain_Maintainers, s_survival_7_Maintainers);
+    function claim7Love_MaintainerFairDrop() external {
+        common_claim(InteractType.Out_Claim_As_Maintainer, SEQ_1_Mountain_Maintainers, s_mountain_1_maintainers);
     }
 
-    function claim8_CreatorFairDrop() external {
-        common_claim(InteractType.Out_Claim8_As_Creator, SEQ_8_Earth_Creators, s_8_creators);
+    function claim8Love_FounderFairDrop() external {
+        common_claim(InteractType.Out_Claim_As_Founder, SEQ_0_Earth_Founders, s_earth_0_founders);
     }
 
     function common_claim(
@@ -700,27 +466,27 @@ contract BaguaDukiDaoContract is
             revert NotQualifiedForClaim(interactType);
         }
 
-        if (claimedRound == s_daoEvolveBlockNum) {
-            console2.log("common_claim already claimed", msg.sender, claimedRound, s_daoEvolveBlockNum);
+        if (claimedRound == s_dao_evovle_block_num) {
+            console2.log("common_claim already claimed", msg.sender, claimedRound, s_dao_evovle_block_num);
             revert ClaimedCurrentRoundAlreadyError();
         }
 
-        if (claimedRound > s_daoEvolveBlockNum) {
+        if (claimedRound > s_dao_evovle_block_num) {
             console2.log(
                 "common_claim joined after current dao distribution, not qualified",
                 msg.sender,
                 claimedRound,
-                s_daoEvolveBlockNum
+                s_dao_evovle_block_num
             );
             revert JoinedAfterCurrentDaoDistribution();
         }
 
-        DaoFairDrop storage fairDrop = s_baguaDaoFairDropArr[seq];
+        DaoFairDrop storage fairDrop = s_dao_fair_drop_arr[seq];
 
         // EFFECTS
         fairDrop.unitNumber -= 1;
-        claimMap[msg.sender] = s_daoEvolveBlockNum;
-        s_claimed_amount += fairDrop.unitAmount;
+        claimMap[msg.sender] = s_dao_evovle_block_num;
+        s_dao_claimed_amount += fairDrop.unitAmount;
 
         // INTERACTIONS
         bool success = stableCoin.transfer(msg.sender, fairDrop.unitAmount);
@@ -728,14 +494,12 @@ contract BaguaDukiDaoContract is
             revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
         }
 
-        emit UnstoppableEvent(
-            msg.sender, s_daoEvolveBlockNum, interactType, fairDrop.unitAmount, 1, "", block.timestamp
+        emit DukiInActionEvent(
+            msg.sender, interactType, s_dao_evovle_block_num, fairDrop.unitAmount, 1, block.timestamp
         );
     }
 
-    function commonDeductFee(InteractType interactType, uint256 requiredMoney, uint256 units, string memory uns_domain)
-        internal
-    {
+    function commonDeductFee(InteractType interactType, uint256 requiredMoney) internal {
         uint256 allowanceMoney = stableCoin.allowance(msg.sender, address(this));
         if (allowanceMoney < requiredMoney) {
             console2.log("InsufficientAllowance:allowanceMoney < requiredMoney", allowanceMoney, requiredMoney);
@@ -744,12 +508,10 @@ contract BaguaDukiDaoContract is
 
         bool success = stableCoin.transferFrom(msg.sender, address(this), requiredMoney);
 
-        console2.log("CoinReceived, requiredMoney from", success, requiredMoney, units);
+        console2.log("CoinReceived, requiredMoney from", success, requiredMoney);
 
         if (success) {
-            emit UnstoppableEvent(
-                msg.sender, s_daoEvolveBlockNum, interactType, requiredMoney, units, uns_domain, block.timestamp
-            );
+            emit DukiInActionEvent(msg.sender, interactType, s_dao_evovle_block_num, requiredMoney, 1, block.timestamp);
         } else {
             console2.log("TransferFailed:TransferFailed");
             revert TransferFailed(CoinFlowType.In, msg.sender, requiredMoney);

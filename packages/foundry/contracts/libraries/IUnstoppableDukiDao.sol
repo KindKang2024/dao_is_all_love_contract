@@ -9,39 +9,45 @@ interface IUnstoppableDukiDao is ISharedStructs {
     function totalStableCoin() external view returns (uint256);
 
     function stableCoinAddress() external view returns (address);
-    function uniRegistryAddress() external view returns (address);
 
-    function lotteryQualification(address user) external view returns (LotteryQualification memory);
+    function baguaDaoUnitCountArr() external view returns (uint256[8] memory);
+    function baguaDaoFairDropArr() external view returns (DaoFairDrop[8] memory);
+    function baguaDaoBpsArr() external view returns (uint256[8] memory);
 
-    function baguaDaoUnitCountArr() external view returns (uint256[9] memory);
-    function baguaDaoFairDropArr() external view returns (DaoFairDrop[9] memory);
-    function baguaDaoBpsArr() external view returns (uint256[9] memory);
+    function buaguaDaoAgg4Me(address user) external view returns (BaguaDaoAgg memory);
 
-    function expireSecondsOfSubscription(string calldata uns_domain) external view returns (uint256);
+    // 还愿, money can be 0
+    function payLoveIntoDao(
+        string calldata willMessage,
+        string calldata willSignature,
+        uint256 willDivinationResult,
+        uint256 loveAsMoneyAmount
+    ) external;
 
-    function buaguaDaoAgg4Me(address user, string calldata uns_domain) external view returns (BaguaDaoAgg memory);
+    function payToInvest() external;
 
-    // State changing functions
-    function payToSubscribe(string calldata uns_domain, uint32 _subYears) external;
+    // the following function needs to verified by the founder or maintainer,
+    // ultimately all determined by the founder's will, I do not believe that all need to be decentralized.
+    // That means no one is really has accountability for any thing, no body is in charge in the end.
 
-    function payToExtend(string calldata uns_domain, uint32 _extendYears) external;
+    // maybe later
+    // function requestToVerifyAsContributor() external;
+    // function requestToVerifyAsMaintainer() external;
+    // function requestToVerifyAsDukiInActionBuilder() external;
 
-    function payToJoinCommunityAndLottery() external;
+    // function approveAsContributor(address requestor) external;
+    // function approveAsMaintainer(address requestor) external;
+    // function approveAsDukiInActionBuilder(address requestor) external;
 
-    function payToInvestUnsInLimo(string calldata uns_domain) external;
-
-    function evolveDaoThenDistribute(uint32 lotteryWinnerNumber) external returns (bool, uint256);
+    function evolveDaoAndDivideLove(uint32 luckyNumber) external returns (bool, uint256);
 
     // Claim functions
-    function claim1_AlmDukiInActionFairDrop(string calldata uns_domain) external;
-
-    // function claimNationFairDrop() external;
-
-    function claim3_CommunityLotteryDrop() external;
-    function claim4_BuilderFairDrop() external;
-    function claim5_ContributorFairDrop() external;
-    // invest on the domain name, and also be the lifetime subscription
-    function claim6_UnsInvestorFairDrop(string calldata uns_domain) external;
-    function claim7_MaintainerFairDrop() external;
-    function claim8_CreatorFairDrop() external;
+    function claim1Love_WorldDukiInActionFairDrop() external;
+    function claim2Love_NationDukiInActionFairDrop() external;
+    function claim3Love_CommunityLotteryFairDrop() external;
+    function claim4Love_BuilderFairDrop() external;
+    function claim5Love_ContributorFairDrop() external;
+    function claim6Love_InvestorFairDrop() external;
+    function claim7Love_MaintainerFairDrop() external;
+    function claim8Love_FounderFairDrop() external;
 }

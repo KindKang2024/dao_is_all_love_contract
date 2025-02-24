@@ -152,7 +152,7 @@ const deployedContracts = {
       deploymentScript: "Deploy.s.sol",
     },
     BaguaDukiDaoContract: {
-      address: "0xa15bb66138824a1c7167f5e85b957d04dd34e468",
+      address: "0x8ce361602b935680e8dec218b820ff5056beb7af",
       abi: [
         {
           type: "constructor",
@@ -183,8 +183,8 @@ const deployedContracts = {
           outputs: [
             {
               name: "",
-              type: "uint256[9]",
-              internalType: "uint256[9]",
+              type: "uint256[8]",
+              internalType: "uint256[8]",
             },
           ],
           stateMutability: "view",
@@ -196,8 +196,8 @@ const deployedContracts = {
           outputs: [
             {
               name: "",
-              type: "tuple[9]",
-              internalType: "struct ISharedStructs.DaoFairDrop[9]",
+              type: "tuple[8]",
+              internalType: "struct ISharedStructs.DaoFairDrop[8]",
               components: [
                 {
                   name: "unitAmount",
@@ -226,8 +226,8 @@ const deployedContracts = {
           outputs: [
             {
               name: "",
-              type: "uint256[9]",
-              internalType: "uint256[9]",
+              type: "uint256[8]",
+              internalType: "uint256[8]",
             },
           ],
           stateMutability: "view",
@@ -240,11 +240,6 @@ const deployedContracts = {
               name: "user",
               type: "address",
               internalType: "address",
-            },
-            {
-              name: "uns_domain",
-              type: "string",
-              internalType: "string",
             },
           ],
           outputs: [
@@ -259,44 +254,24 @@ const deployedContracts = {
                   internalType: "uint256",
                 },
                 {
-                  name: "subscriptionExpireSeconds",
+                  name: "totalClaimedAmount",
                   type: "uint256",
                   internalType: "uint256",
-                },
-                {
-                  name: "lotteryWinnerNumber",
-                  type: "uint256",
-                  internalType: "uint256",
-                },
-                {
-                  name: "lotteryParticipantNum",
-                  type: "uint256",
-                  internalType: "uint256",
-                },
-                {
-                  name: "claimedAmount",
-                  type: "uint256",
-                  internalType: "uint256",
-                },
-                {
-                  name: "claimedRoundArr",
-                  type: "uint256[9]",
-                  internalType: "uint256[9]",
                 },
                 {
                   name: "bpsArr",
-                  type: "uint256[9]",
-                  internalType: "uint256[9]",
+                  type: "uint256[8]",
+                  internalType: "uint256[8]",
                 },
                 {
-                  name: "num",
-                  type: "uint256[9]",
-                  internalType: "uint256[9]",
+                  name: "bpsNumArr",
+                  type: "uint256[8]",
+                  internalType: "uint256[8]",
                 },
                 {
-                  name: "fairDrops",
-                  type: "tuple[9]",
-                  internalType: "struct ISharedStructs.DaoFairDrop[9]",
+                  name: "curFairDrops",
+                  type: "tuple[8]",
+                  internalType: "struct ISharedStructs.DaoFairDrop[8]",
                   components: [
                     {
                       name: "unitAmount",
@@ -315,6 +290,21 @@ const deployedContracts = {
                     },
                   ],
                 },
+                {
+                  name: "luckyCommunityParticipants",
+                  type: "uint256[3]",
+                  internalType: "uint256[3]",
+                },
+                {
+                  name: "userClaimedRoundArr",
+                  type: "uint256[8]",
+                  internalType: "uint256[8]",
+                },
+                {
+                  name: "userParticipantNo",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
               ],
             },
           ],
@@ -322,71 +312,66 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "claim1_AlmDukiInActionFairDrop",
+          name: "claim1Love_WorldDukiInActionFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim2Love_NationDukiInActionFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim3Love_CommunityLotteryFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim4Love_BuilderFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim5Love_ContributorFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim6Love_InvestorFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim7Love_MaintainerFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim8Love_FounderFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "evolveDaoAndDivideLove",
           inputs: [
             {
-              name: "uns_domain",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "claim3_CommunityLotteryDrop",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "claim4_BuilderFairDrop",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "claim5_ContributorFairDrop",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "claim6_UnsInvestorFairDrop",
-          inputs: [
-            {
-              name: "uns_domain",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "claim7_MaintainerFairDrop",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "claim8_CreatorFairDrop",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "evolveDaoThenDistribute",
-          inputs: [
-            {
-              name: "lotteryWinnerNumber",
+              name: "communityLuckyReminderNumber",
               type: "uint32",
               internalType: "uint32",
             },
@@ -404,25 +389,6 @@ const deployedContracts = {
             },
           ],
           stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "expireSecondsOfSubscription",
-          inputs: [
-            {
-              name: "uns_domain",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
         },
         {
           type: "function",
@@ -456,37 +422,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "lotteryQualification",
-          inputs: [
-            {
-              name: "user",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "tuple",
-              internalType: "struct ISharedStructs.LotteryQualification",
-              components: [
-                {
-                  name: "claimedRound",
-                  type: "uint256",
-                  internalType: "uint256",
-                },
-                {
-                  name: "participantNum",
-                  type: "uint256",
-                  internalType: "uint256",
-                },
-              ],
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "owner",
           inputs: [],
           outputs: [
@@ -500,17 +435,27 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "payToExtend",
+          name: "payLoveIntoDao",
           inputs: [
             {
-              name: "uns_domain",
+              name: "willMessage",
               type: "string",
               internalType: "string",
             },
             {
-              name: "_extendYears",
-              type: "uint32",
-              internalType: "uint32",
+              name: "willSignature",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "willDivinationResult",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "loveAsMoneyAmount",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           outputs: [],
@@ -518,39 +463,8 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "payToInvestUnsInLimo",
-          inputs: [
-            {
-              name: "uns_domain",
-              type: "string",
-              internalType: "string",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "payToJoinCommunityAndLottery",
+          name: "payToInvest",
           inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "payToSubscribe",
-          inputs: [
-            {
-              name: "uns_domain",
-              type: "string",
-              internalType: "string",
-            },
-            {
-              name: "_subYears",
-              type: "uint32",
-              internalType: "uint32",
-            },
-          ],
           outputs: [],
           stateMutability: "nonpayable",
         },
@@ -576,26 +490,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "s_alm_1_dukiClaimerDomains",
-          inputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [
-            {
-              name: "claimedEvolveNum",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "s_bornSeconds",
+          name: "s_dao_bornSeconds",
           inputs: [],
           outputs: [
             {
@@ -608,7 +503,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "s_community_lottery_3_entry_fee",
+          name: "s_dao_evolve_step",
           inputs: [],
           outputs: [
             {
@@ -621,85 +516,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "s_daoEvolveBlockNum",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "s_daoEvolveNum",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "s_investment_6_fee",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "s_lotteryWinnerNumber",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "s_subscription_yearly_fee",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "s_unstoppableInvestorsCount",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "s_unstoppableSubscriberCount",
+          name: "s_dao_evovle_block_num",
           inputs: [],
           outputs: [
             {
@@ -751,32 +568,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "uniRegistryAddress",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "updateBaguaDaoBps",
-          inputs: [
-            {
-              name: "newDaoBpsArr",
-              type: "uint256[9]",
-              internalType: "uint256[9]",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
           name: "upgradeToAndCall",
           inputs: [
             {
@@ -799,15 +590,15 @@ const deployedContracts = {
           inputs: [
             {
               name: "oldBpsArr",
-              type: "uint256[9]",
+              type: "uint256[8]",
               indexed: false,
-              internalType: "uint256[9]",
+              internalType: "uint256[8]",
             },
             {
               name: "newBpsArr",
-              type: "uint256[9]",
+              type: "uint256[8]",
               indexed: false,
-              internalType: "uint256[9]",
+              internalType: "uint256[8]",
             },
             {
               name: "timestamp",
@@ -860,16 +651,16 @@ const deployedContracts = {
               internalType: "uint256",
             },
             {
-              name: "winnerNumber",
-              type: "uint256",
+              name: "luckyParticantsNumber",
+              type: "uint256[3]",
               indexed: false,
-              internalType: "uint256",
+              internalType: "uint256[3]",
             },
             {
               name: "fairDrops",
-              type: "tuple[9]",
+              type: "tuple[8]",
               indexed: false,
-              internalType: "struct ISharedStructs.DaoFairDrop[9]",
+              internalType: "struct ISharedStructs.DaoFairDrop[8]",
               components: [
                 {
                   name: "unitAmount",
@@ -887,6 +678,49 @@ const deployedContracts = {
                   internalType: "uint256",
                 },
               ],
+            },
+            {
+              name: "timestamp",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "DukiInActionEvent",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+            {
+              name: "interactType",
+              type: "uint8",
+              indexed: false,
+              internalType: "enum ISharedStructs.InteractType",
+            },
+            {
+              name: "daoEvolveNum",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "unitNumber",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
             },
             {
               name: "timestamp",
@@ -931,55 +765,6 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "UnstoppableEvent",
-          inputs: [
-            {
-              name: "account",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-            {
-              name: "evolveNum",
-              type: "uint256",
-              indexed: true,
-              internalType: "uint256",
-            },
-            {
-              name: "t",
-              type: "uint8",
-              indexed: false,
-              internalType: "enum ISharedStructs.InteractType",
-            },
-            {
-              name: "amount",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
-            },
-            {
-              name: "units",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
-            },
-            {
-              name: "uns_domain",
-              type: "string",
-              indexed: false,
-              internalType: "string",
-            },
-            {
-              name: "timestamp",
-              type: "uint256",
-              indexed: false,
-              internalType: "uint256",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "event",
           name: "Upgraded",
           inputs: [
             {
@@ -1001,11 +786,6 @@ const deployedContracts = {
               internalType: "address",
             },
           ],
-        },
-        {
-          type: "error",
-          name: "AlreadyEnteredLottery",
-          inputs: [],
         },
         {
           type: "error",
@@ -1108,7 +888,17 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "InvalidSignature",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "InvalidTrigramIndexError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvertorsFullExceed369",
           inputs: [],
         },
         {
@@ -1139,7 +929,7 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "LifetimeSubscriptionExceed369",
+          name: "LoveAsMoneyIntoDaoRequired",
           inputs: [],
         },
         {
@@ -1154,7 +944,12 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "NoNeedExtendLifetimeSubscription",
+          name: "NotCommunityLotteryWinner",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotCommunityParticipant",
           inputs: [],
         },
         {
@@ -1164,17 +959,7 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "NotInLottery",
-          inputs: [],
-        },
-        {
-          type: "error",
           name: "NotInitializing",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "NotLotteryWinner",
           inputs: [],
         },
         {
@@ -1195,8 +980,14 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "NotUnsDomainOwnerError",
-          inputs: [],
+          name: "NotSupported",
+          inputs: [
+            {
+              name: "actionNeeded",
+              type: "string",
+              internalType: "string",
+            },
+          ],
         },
         {
           type: "error",
@@ -1219,21 +1010,6 @@ const deployedContracts = {
               internalType: "address",
             },
           ],
-        },
-        {
-          type: "error",
-          name: "SubscriptionExistsError",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "SubscriptionNotExist",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "SubscriptionYearsInvalid",
-          inputs: [],
         },
         {
           type: "error",
@@ -1274,26 +1050,16 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "UnsSubDomainForbidden",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "UnsTestDomainError",
-          inputs: [],
-        },
-        {
-          type: "error",
           name: "ZeroAddressError",
           inputs: [],
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740381617.json",
+      deploymentFile: "run-1740401696.json",
       deploymentScript: "Deploy.s.sol",
     },
     ERC1967Proxy: {
-      address: "0xb19b36b1456e65e3a6d514d3f715f204bd59f431",
+      address: "0xe1aa25618fa0c7a1cfdab5d6b456af611873b629",
       abi: [
         {
           type: "constructor",
@@ -1362,7 +1128,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740381617.json",
+      deploymentFile: "run-1740401696.json",
       deploymentScript: "Deploy.s.sol",
     },
   },
