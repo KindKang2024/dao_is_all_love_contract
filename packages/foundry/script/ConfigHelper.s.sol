@@ -12,7 +12,6 @@ import { console2 } from "forge-std/console2.sol";
 contract ConfigHelper is Script, ISharedStructs {
     NetworkConfig public activeNetworkConfig;
 
-    uint8 public constant DECIMALS = 8;
     int256 public constant ETH_USD_PRICE = 2000e8;
     int256 public constant BTC_USD_PRICE = 1000e8;
 

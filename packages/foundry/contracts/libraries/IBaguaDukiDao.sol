@@ -19,7 +19,6 @@ interface IBaguaDukiDao {
     error BpsTooSmallViolationError(); // some constraints are violated, too big or too small
     error NoFoundersError(); // When no founders provided
     error ZeroAddressError(); // When founder address is zero
-    error NotCommunityParticipant(); // When founder address is zero
     error NotCommunityLotteryWinner(); // When founder address is zero
     error DuplicateFounderError(); // When duplicate founder address found
     error InvalidTrigramIndexError(); // When trigram index is out of bounds

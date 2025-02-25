@@ -39,15 +39,15 @@ interface IUnstoppableDukiDao is ISharedStructs {
     // function approveAsMaintainer(address requestor) external;
     // function approveAsDukiInActionBuilder(address requestor) external;
 
-    function evolveDaoAndDivideLove(uint32 luckyNumber) external returns (bool, uint256);
+    function evolveDaoAndDivideLove(uint256 luckyNumber) external returns (bool, uint256);
 
     // Claim functions
-    function claim1Love_WorldDukiInActionFairDrop() external;
-    function claim2Love_NationDukiInActionFairDrop() external;
-    function claim3Love_CommunityLotteryFairDrop() external;
+    function claim7Love_WorldDukiInActionFairDrop() external;
+    function claim6Love_NationDukiInActionFairDrop() external;
+    function claim5Love_CommunityLotteryFairDrop() external;
     function claim4Love_BuilderFairDrop() external;
-    function claim5Love_ContributorFairDrop() external;
-    function claim6Love_InvestorFairDrop() external;
-    function claim7Love_MaintainerFairDrop() external;
-    function claim8Love_FounderFairDrop() external;
+    function claim3Love_ContributorFairDrop() external;
+    function claim2Love_InvestorFairDrop() external;
+    function claim1Love_MaintainerFairDrop() external;
+    function claim0Love_FounderFairDrop() external;
 }

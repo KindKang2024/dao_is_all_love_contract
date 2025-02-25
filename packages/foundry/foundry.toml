@@ -1,8 +1,9 @@
 [profile.default]
 src = 'contracts'
 out = 'out'
+via_ir = true
 libs = ['lib']
-fs_permissions = [{ access = "read-write", path = "./"}]
+fs_permissions = [{ access = "read-write", path = "./" }]
 
 
 [rpc_endpoints]
@@ -34,15 +35,9 @@ polygonMumbai = { key = "${ETHERSCAN_API_KEY}" }
 sepolia = { key = "${ETHERSCAN_API_KEY}" }
 
 
-
 [fmt]
 line_length = 120
 tab_width = 4
 quote_style = "double"
 bracket_spacing = true
 int_types = "long"
-
-
-
-
-# See more config options https://book.getfoundry.sh/reference/config/overview

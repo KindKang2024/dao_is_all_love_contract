@@ -11,8 +11,9 @@ interface ISharedStructs is IBaguaDukiDao {
     }
 
     struct CommunityParticipation {
-        uint256 claimedRound;
         uint256 participantNo;
+        uint256 participantAmount;
+        uint256 luckyClaimedRound;
     }
 
     struct BaguaDaoAgg {
@@ -20,23 +21,17 @@ interface ISharedStructs is IBaguaDukiDao {
         uint256 totalClaimedAmount;
         uint256[8] bpsArr;
         uint256[8] bpsNumArr; // how many people in each bps
-        // like normal airdrop, but emphasize on fairness and duki
-        // special: daoFairDrops[0] = AlmFairDrop(distributionAmount, evolveNum, evolveBlockNum );
         // current distribution info
-        DaoFairDrop[8] curFairDrops;
-        uint256[3] luckyCommunityParticipants;
+        DaoFairDrop[8] fairDrops;
+        uint256 communityLuckyNumber;
         // user info
         uint256[8] userClaimedRoundArr;
-        uint256 userParticipantNo; // community seq number , determines lottery winned or not
+        CommunityParticipation participation;
     }
-
-    // like normal airdrop, but emphasize on fairness and duki
-    // special: daoFairDrops[0] = AlmFairDrop(distributionAmount, evolveNum, evolveBlockNum);
 
     struct DaoFairDrop {
         uint256 unitAmount; // how much money
         uint256 unitNumber; // how many people can claim that money
-        uint256 unitTotal; //abundant because of laziness
     }
 
     enum ConfigChangeType {
@@ -46,7 +41,7 @@ interface ISharedStructs is IBaguaDukiDao {
     event DukiInActionEvent(
         address user,
         InteractType interactType,
-        uint256 daoEvolveNum,
+        uint256 daoEvolveRound,
         uint256 amount,
         uint256 unitNumber,
         uint256 timestamp
@@ -55,12 +50,10 @@ interface ISharedStructs is IBaguaDukiDao {
     event ConfigChanged(ConfigChangeType changeType, uint256 previousFee, uint256 newFee, uint256 timestamp);
 
     event DukiDaoEvolution(
-        uint256 daoEvolveNum, uint256[3] luckyParticantsNumber, DaoFairDrop[8] fairDrops, uint256 timestamp
+        uint256 daoEvolveRound, uint256 communityLuckyNumber, DaoFairDrop[8] fairDrops, uint256 timestamp
     );
 
     enum InteractType {
-        In_To_Invest,
-        In_To_Divine,
         Out_Claim_As_Duki4World,
         Out_Claim_As_Duki4Nation,
         Out_Claim_As_CommunityLottery,
@@ -68,7 +61,9 @@ interface ISharedStructs is IBaguaDukiDao {
         Out_Claim_As_Contributor,
         Out_Claim_As_Investor,
         Out_Claim_As_Maintainer,
-        Out_Claim_As_Founder
+        Out_Claim_As_Founder,
+        In_To_Invest,
+        In_To_Divine
     }
 
     error InvertorsFullExceed369(); // maxNum =  369

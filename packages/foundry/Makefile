@@ -1,3 +1,11 @@
+# Specify the .env file
+ENV_FILE = .env
+
+# Load the environment variables
+include $(ENV_FILE)
+export $(shell sed 's/=.*//' $(ENV_FILE))
+
+
 .PHONY: build deploy generate-abis verify-keystore account chain compile flatten fork format lint test verify
 
 DEPLOY_SCRIPT ?= script/Deploy.s.sol
@@ -63,3 +71,10 @@ lint:
 verify:
 	forge script script/VerifyAll.s.sol --ffi --rpc-url $(RPC_URL)
 
+deploy_stable_coin:
+	forge create  contracts/dependencies/MyERC20Mock.sol:MyERC20Mock \
+     --rpc-url $(RPC_URL) \
+     --private-key $(DEPLOYER_PRIVATE_KEY) \
+	 --etherscan-api-key $(ETHERSCAN_API_KEY) \
+     --constructor-args "USDC" "USDC" $(TEST_INTERACT_ACCOUNT) 1000000000000000000000 \
+	 --verify \

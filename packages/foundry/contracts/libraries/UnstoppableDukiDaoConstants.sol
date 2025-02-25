@@ -6,8 +6,7 @@ import { IUnstoppableDukiDao } from "./IUnstoppableDukiDao.sol";
 
 abstract contract UnstoppableDukiDaoConstants {
     uint256 constant BASIC_INVEST_AMOUNT = 100 * ONE_DOLLAR_BASE; // must be 1 to distinguish from 0 - unexisted
-    uint256 constant Initial_Evolve_Base_Num = 1; // must be 1 to distinguish from 0 - unexisted
-    uint256 constant Initial_Claim_FairDrop_Round = Initial_Evolve_Base_Num; // must be 1 to distinguish from 0 - unexisted
+    uint256 constant Initial_Evolve_Round = 1; // must be 1 to distinguish from 0 - unexisted
 
     // do not take this numbers too seriously. Without trust, there are always ways to cheat; yes, everything.
     uint256 constant BPS_PRECISION = 10000;
@@ -45,7 +44,7 @@ abstract contract UnstoppableDukiDaoConstants {
     uint256 constant SEQ_6_DukiInAction_ALM_Nation = 6; // hope it become as tax to all lives in that nation
     uint256 constant SEQ_7_DukiInAction_ALM_World = 7;
 
-    uint256 constant LotteryMaxLuckyNumber = 1000;
+    uint256 constant LotteryMaxLuckyNumber = 2000;
 
     uint256 constant Stable_Coin_Decimals = 6; // USDT
     // A zero-knowledge proof Of human verification backed with authority and freely challengeable is needed .
