@@ -7,44 +7,29 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     BaguaDukiDaoContract: {
-      address: "0xe8f76a822b57b973c7a89006092364fff8f69040",
+      address: "0x90bb87c6258ad0d309d2f3a263d3bc7b0b9f522d",
       abi: [
         {
           type: "constructor",
-          inputs: [
-            {
-              name: "config",
-              type: "tuple",
-              internalType: "struct ISharedStructs.NetworkConfig",
-              components: [
-                {
-                  name: "stableCoin",
-                  type: "address",
-                  internalType: "address",
-                },
-                {
-                  name: "anyrand",
-                  type: "address",
-                  internalType: "address",
-                },
-                {
-                  name: "maintainers",
-                  type: "address[]",
-                  internalType: "address[]",
-                },
-                {
-                  name: "creators",
-                  type: "address[]",
-                  internalType: "address[]",
-                },
-              ],
-            },
-          ],
+          inputs: [],
           stateMutability: "nonpayable",
         },
         {
           type: "receive",
           stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "UPGRADE_INTERFACE_VERSION",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
         },
         {
           type: "function",
@@ -306,6 +291,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "payLoveIntoDao",
           inputs: [
             {
@@ -341,6 +339,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "proxiableUUID",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "receiveRandomness",
           inputs: [
             {
@@ -354,6 +365,13 @@ const deployedContracts = {
               internalType: "uint256",
             },
           ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
           outputs: [],
           stateMutability: "nonpayable",
         },
@@ -560,10 +578,41 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
           name: "tryAbortDaoEvolution",
           inputs: [],
           outputs: [],
           stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "upgradeToAndCall",
+          inputs: [
+            {
+              name: "newImplementation",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
         },
         {
           type: "event",
@@ -739,6 +788,62 @@ const deployedContracts = {
           anonymous: false,
         },
         {
+          type: "event",
+          name: "Initialized",
+          inputs: [
+            {
+              name: "version",
+              type: "uint64",
+              indexed: false,
+              internalType: "uint64",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "previousOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Upgraded",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AddressEmptyCode",
+          inputs: [
+            {
+              name: "target",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
           type: "error",
           name: "AlreadyInvested",
           inputs: [],
@@ -771,6 +876,27 @@ const deployedContracts = {
         {
           type: "error",
           name: "DuplicateFounderError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ERC1967InvalidImplementation",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC1967NonPayable",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "FailedCall",
           inputs: [],
         },
         {
@@ -836,6 +962,11 @@ const deployedContracts = {
               internalType: "uint256",
             },
           ],
+        },
+        {
+          type: "error",
+          name: "InvalidInitialization",
+          inputs: [],
         },
         {
           type: "error",
@@ -931,6 +1062,11 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "NotInitializing",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "NotOwnerError",
           inputs: [],
         },
@@ -973,6 +1109,28 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [
+            {
+              name: "account",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
           name: "RefundFailed",
           inputs: [],
         },
@@ -999,6 +1157,22 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "UUPSUnauthorizedCallContext",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "UUPSUnsupportedProxiableUUID",
+          inputs: [
+            {
+              name: "slot",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
           name: "UnknownWillId",
           inputs: [
             {
@@ -1020,11 +1194,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740551264.json",
+      deploymentFile: "run-1740558836.json",
       deploymentScript: "Deploy.s.sol",
     },
     MyERC20Mock: {
-      address: "0x04fc820176617a99ae134904935bc854b2e51628",
+      address: "0xb1527802e7800034d6887b0a99a5ad2683184b95",
       abi: [
         {
           type: "constructor",
@@ -1673,11 +1847,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740551264.json",
+      deploymentFile: "run-1740558836.json",
       deploymentScript: "Deploy.s.sol",
     },
     AnyrandMock: {
-      address: "0xf1078fd568ad76e49e6f88d1ff485402a086976b",
+      address: "0x4c073a92b1c8fb55313102ab412fb7f1704bcbdd",
       abi: [
         {
           type: "function",
@@ -1902,50 +2076,98 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740551264.json",
+      deploymentFile: "run-1740558836.json",
       deploymentScript: "Deploy.s.sol",
     },
-  },
-  534351: {
-    BaguaDukiDaoContract: {
-      address: "0x2c36b3e330098985cd1df0709c74ec340597066a",
+    ERC1967Proxy: {
+      address: "0x38381d63418ff752dba93ee018e36a6814388fa7",
       abi: [
         {
           type: "constructor",
           inputs: [
             {
-              name: "config",
-              type: "tuple",
-              internalType: "struct ISharedStructs.NetworkConfig",
-              components: [
-                {
-                  name: "stableCoin",
-                  type: "address",
-                  internalType: "address",
-                },
-                {
-                  name: "anyrand",
-                  type: "address",
-                  internalType: "address",
-                },
-                {
-                  name: "maintainers",
-                  type: "address[]",
-                  internalType: "address[]",
-                },
-                {
-                  name: "creators",
-                  type: "address[]",
-                  internalType: "address[]",
-                },
-              ],
+              name: "implementation",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_data",
+              type: "bytes",
+              internalType: "bytes",
             },
           ],
+          stateMutability: "payable",
+        },
+        {
+          type: "fallback",
+          stateMutability: "payable",
+        },
+        {
+          type: "event",
+          name: "Upgraded",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AddressEmptyCode",
+          inputs: [
+            {
+              name: "target",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC1967InvalidImplementation",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC1967NonPayable",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "FailedCall",
+          inputs: [],
+        },
+        {
+          type: "constructor",
+          inputs: [],
           stateMutability: "nonpayable",
         },
         {
           type: "receive",
           stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "UPGRADE_INTERFACE_VERSION",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
         },
         {
           type: "function",
@@ -2207,6 +2429,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "payLoveIntoDao",
           inputs: [
             {
@@ -2242,6 +2477,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "proxiableUUID",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "receiveRandomness",
           inputs: [
             {
@@ -2255,6 +2503,13 @@ const deployedContracts = {
               internalType: "uint256",
             },
           ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
           outputs: [],
           stateMutability: "nonpayable",
         },
@@ -2461,10 +2716,41 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
           name: "tryAbortDaoEvolution",
           inputs: [],
           outputs: [],
           stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "upgradeToAndCall",
+          inputs: [
+            {
+              name: "newImplementation",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
         },
         {
           type: "event",
@@ -2640,6 +2926,62 @@ const deployedContracts = {
           anonymous: false,
         },
         {
+          type: "event",
+          name: "Initialized",
+          inputs: [
+            {
+              name: "version",
+              type: "uint64",
+              indexed: false,
+              internalType: "uint64",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "previousOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Upgraded",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AddressEmptyCode",
+          inputs: [
+            {
+              name: "target",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
           type: "error",
           name: "AlreadyInvested",
           inputs: [],
@@ -2672,6 +3014,27 @@ const deployedContracts = {
         {
           type: "error",
           name: "DuplicateFounderError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ERC1967InvalidImplementation",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC1967NonPayable",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "FailedCall",
           inputs: [],
         },
         {
@@ -2737,6 +3100,11 @@ const deployedContracts = {
               internalType: "uint256",
             },
           ],
+        },
+        {
+          type: "error",
+          name: "InvalidInitialization",
+          inputs: [],
         },
         {
           type: "error",
@@ -2832,6 +3200,11 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "NotInitializing",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "NotOwnerError",
           inputs: [],
         },
@@ -2874,6 +3247,28 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [
+            {
+              name: "account",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
           name: "RefundFailed",
           inputs: [],
         },
@@ -2895,6 +3290,1215 @@ const deployedContracts = {
               name: "amount",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "UUPSUnauthorizedCallContext",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "UUPSUnsupportedProxiableUUID",
+          inputs: [
+            {
+              name: "slot",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "UnknownWillId",
+          inputs: [
+            {
+              name: "willId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "expectedWillId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ZeroAddressError",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deploymentFile: "run-1740558836.json",
+      deploymentScript: "Deploy.s.sol",
+    },
+  },
+  534351: {
+    BaguaDukiDaoContract: {
+      address: "0x2c36b3e330098985cd1df0709c74ec340597066a",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "receive",
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "UPGRADE_INTERFACE_VERSION",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "automationRegistry",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "baguaDaoBpsArr",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256[8]",
+              internalType: "uint256[8]",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "baguaDaoFairDropArr",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "tuple[8]",
+              internalType: "struct ISharedStructs.DaoFairDrop[8]",
+              components: [
+                {
+                  name: "unitAmount",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "unitNumber",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "baguaDaoUnitCountArr",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256[8]",
+              internalType: "uint256[8]",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "buaguaDaoAgg4Me",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "tuple",
+              internalType: "struct ISharedStructs.BaguaDaoAgg",
+              components: [
+                {
+                  name: "bornSeconds",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "totalClaimedAmount",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "bpsArr",
+                  type: "uint256[8]",
+                  internalType: "uint256[8]",
+                },
+                {
+                  name: "bpsNumArr",
+                  type: "uint256[8]",
+                  internalType: "uint256[8]",
+                },
+                {
+                  name: "fairDrops",
+                  type: "tuple[8]",
+                  internalType: "struct ISharedStructs.DaoFairDrop[8]",
+                  components: [
+                    {
+                      name: "unitAmount",
+                      type: "uint256",
+                      internalType: "uint256",
+                    },
+                    {
+                      name: "unitNumber",
+                      type: "uint256",
+                      internalType: "uint256",
+                    },
+                  ],
+                },
+                {
+                  name: "communityLuckyNumber",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "userClaimedRoundArr",
+                  type: "uint256[8]",
+                  internalType: "uint256[8]",
+                },
+                {
+                  name: "participation",
+                  type: "tuple",
+                  internalType: "struct ISharedStructs.CommunityParticipation",
+                  components: [
+                    {
+                      name: "participantNo",
+                      type: "uint256",
+                      internalType: "uint256",
+                    },
+                    {
+                      name: "participantAmount",
+                      type: "uint256",
+                      internalType: "uint256",
+                    },
+                    {
+                      name: "luckyClaimedRound",
+                      type: "uint256",
+                      internalType: "uint256",
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "claim0Love_FounderFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim1Love_MaintainerFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim2Love_InvestorFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim3Love_ContributorFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim4Love_BuilderFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim5Love_CommunityLotteryFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim6Love_NationDukiInActionFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "claim7Love_WorldDukiInActionFairDrop",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "evolveDaoAndDivideLove",
+          inputs: [
+            {
+              name: "randomNumber",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "initialize",
+          inputs: [
+            {
+              name: "config",
+              type: "tuple",
+              internalType: "struct ISharedStructs.NetworkConfig",
+              components: [
+                {
+                  name: "stableCoin",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "anyrand",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "maintainers",
+                  type: "address[]",
+                  internalType: "address[]",
+                },
+                {
+                  name: "creators",
+                  type: "address[]",
+                  internalType: "address[]",
+                },
+              ],
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "payLoveIntoDao",
+          inputs: [
+            {
+              name: "willMessage",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "willSignature",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "willDivinationResult",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "loveAsMoneyAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "payToInvest",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "proxiableUUID",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "receiveRandomness",
+          inputs: [
+            {
+              name: "requestId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "randomNumber",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "requestDaoEvolution",
+          inputs: [
+            {
+              name: "callbackGasLimit",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "s_anyrand",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_community_lucky_participant_no",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_dao_born_seconds",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_dao_evolve_round",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_lastRandomnessWillCallbackTimestamp",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_lastRandomnessWillId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_lastRandomnessWillTimestamp",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_minWaitBetweenEvolutions",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_randomnessRequestDeadline",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_stableCoin",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "setAutomationRegistry",
+          inputs: [
+            {
+              name: "_automationRegistry",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setMinWaitBetweenEvolutions",
+          inputs: [
+            {
+              name: "newWaitTime",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setRandomnessRequestDeadline",
+          inputs: [
+            {
+              name: "newDeadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "totalStableCoin",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "tryAbortDaoEvolution",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "upgradeToAndCall",
+          inputs: [
+            {
+              name: "newImplementation",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "data",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "event",
+          name: "BaguaDukiDaoBpsChanged",
+          inputs: [
+            {
+              name: "oldBpsArr",
+              type: "uint256[8]",
+              indexed: false,
+              internalType: "uint256[8]",
+            },
+            {
+              name: "newBpsArr",
+              type: "uint256[8]",
+              indexed: false,
+              internalType: "uint256[8]",
+            },
+            {
+              name: "timestamp",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "ConfigChanged",
+          inputs: [
+            {
+              name: "changeType",
+              type: "uint8",
+              indexed: false,
+              internalType: "enum ISharedStructs.ConfigChangeType",
+            },
+            {
+              name: "previousFee",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "newFee",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "timestamp",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "DaoEvolutionManifestation",
+          inputs: [
+            {
+              name: "willId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "randomMutationNumber",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "communityLuckyNumber",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "daoEvolveRound",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "fairDrops",
+              type: "tuple[8]",
+              indexed: false,
+              internalType: "struct ISharedStructs.DaoFairDrop[8]",
+              components: [
+                {
+                  name: "unitAmount",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "unitNumber",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+              ],
+            },
+            {
+              name: "timestamp",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "DaoEvolutionWilling",
+          inputs: [
+            {
+              name: "willId",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "timestamp",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "DukiInActionEvent",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+            {
+              name: "interactType",
+              type: "uint8",
+              indexed: false,
+              internalType: "enum ISharedStructs.InteractType",
+            },
+            {
+              name: "daoEvolveRound",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "unitNumber",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+            {
+              name: "timestamp",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Initialized",
+          inputs: [
+            {
+              name: "version",
+              type: "uint64",
+              indexed: false,
+              internalType: "uint64",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "previousOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Upgraded",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AddressEmptyCode",
+          inputs: [
+            {
+              name: "target",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "AlreadyInvested",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "BpsSumError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "BpsTooLargeViolationError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "BpsTooSmallViolationError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ClaimedCurrentRoundAlreadyError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DaoEvolutionInProgress",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DuplicateFounderError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ERC1967InvalidImplementation",
+          inputs: [
+            {
+              name: "implementation",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "ERC1967NonPayable",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "FailedCall",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientAllowance",
+          inputs: [
+            {
+              name: "t",
+              type: "uint8",
+              internalType: "enum ISharedStructs.InteractType",
+            },
+            {
+              name: "src",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InsufficientBalance",
+          inputs: [
+            {
+              name: "balance",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "required",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InsufficientDistributionAmount",
+          inputs: [
+            {
+              name: "balance",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InsufficientPayment",
+          inputs: [
+            {
+              name: "provided",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "required",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidInitialization",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidSignature",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidTrigramIndexError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvertorsFullExceed369",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvestorsFull",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "LateForCurrentClaim",
+          inputs: [
+            {
+              name: "currentClaimRound",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "lateEntryRound",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "LoveAsMoneyIntoDaoRequired",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "MustWaitBetweenEvolutions",
+          inputs: [
+            {
+              name: "lastEvolution",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requiredWait",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "currentTime",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "NoDistributionUnitLeft",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoFoundersError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoParticipants",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoPendingRandomnessWill",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotCommunityLotteryWinner",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotHasRole",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotInitializing",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotOwnerError",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NotQualifiedForClaim",
+          inputs: [
+            {
+              name: "t",
+              type: "uint8",
+              internalType: "enum ISharedStructs.InteractType",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "NotSupported",
+          inputs: [
+            {
+              name: "actionNeeded",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OnlyAnyrandCanCall",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "OnlyAutomationCanCall",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "OnlyMaintainerOrAutomationCanCall",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "OwnableInvalidOwner",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "OwnableUnauthorizedAccount",
+          inputs: [
+            {
+              name: "account",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "RefundFailed",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TransferFailed",
+          inputs: [
+            {
+              name: "t",
+              type: "uint8",
+              internalType: "enum IBaguaDukiDao.CoinFlowType",
+            },
+            {
+              name: "other",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "UUPSUnauthorizedCallContext",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "UUPSUnsupportedProxiableUUID",
+          inputs: [
+            {
+              name: "slot",
+              type: "bytes32",
+              internalType: "bytes32",
             },
           ],
         },

@@ -26,9 +26,6 @@ contract DeployScript is ISharedStructs, Script {
 
         NetworkConfig memory config = configHelper.getConfigAsStruct();
 
-        // deploy some dependencies here if needed
-        // bytes memory initData = abi.encodeWithSelector(BaguaDukiDaoContract.initialize.selector, config);
-
         vm.startBroadcast();
         // First deploy the stablecoin if needed
         if (config.stableCoin == address(0)) {
@@ -40,11 +37,13 @@ contract DeployScript is ISharedStructs, Script {
             config.anyrand = address(newAnyrand);
         }
         // Now deploy the implementation
-        BaguaDukiDaoContract implementation = new BaguaDukiDaoContract(config);
+        // BaguaDukiDaoContract implementation = new BaguaDukiDaoContract(config);
+        BaguaDukiDaoContract implementation = new BaguaDukiDaoContract();
+
+        // deploy some dependencies here if needed
+        bytes memory initData = abi.encodeWithSelector(BaguaDukiDaoContract.initialize.selector, config);
+        ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
         vm.stopBroadcast();
-        // vm.startBroadcast();
-        // ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
-        // vm.stopBroadcast();
-        return (implementation, config);
+        return (BaguaDukiDaoContract(payable(address(proxy))), config);
     }
 }

@@ -8,9 +8,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "./libraries/IBaguaDukiDao.sol";
 import "forge-std/console2.sol"; // For Foundry
-// import "@chainlink/contracts/vrf/VRFConsumerBaseV2.sol";
 
-// Import Anyrand interfaces
 import "./dependencies/IRandomiserCallbackV3.sol";
 import "./dependencies/IAnyrand.sol";
 
@@ -25,9 +23,9 @@ import "@solady/utils/LibString.sol";
  * @author KindKang2024
  */
 contract BaguaDukiDaoContract is
-    // Initializable,
-    // UUPSUpgradeable,
-    // OwnableUpgradeable,
+    Initializable,
+    UUPSUpgradeable,
+    OwnableUpgradeable,
     UnstoppableDukiDaoConstants,
     IUnstoppableDukiDao,
     IRandomiserCallbackV3
@@ -87,24 +85,24 @@ contract BaguaDukiDaoContract is
     // This ensures we can add new storage variables without corrupting existing storage layout
     uint256[49] private __gap;
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    // constructor() {
-    //     _disableInitializers();
-    // }
-
-    constructor(NetworkConfig memory config) {
-        initialize(config);
+    // @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
     }
 
-    // Authorization function for contract upgrades
-    // function _authorizeUpgrade(address newImplementation) internal override onlyOwner {
-    //     require(newImplementation != address(0), "New implementation cannot be zero address");
+    // constructor(NetworkConfig memory config) {
+    //     initialize(config);
     // }
-    // function initialize(NetworkConfig memory config) public initializer {
 
-    function initialize(NetworkConfig memory config) public {
-        // __UUPSUpgradeable_init();
-        // __Ownable_init(msg.sender);
+    // Authorization function for contract upgrades
+    function _authorizeUpgrade(address newImplementation) internal pure override {
+        require(newImplementation != address(0), "New implementation cannot be zero address");
+    }
+
+    // function initialize(NetworkConfig memory config) public {
+    function initialize(NetworkConfig memory config) public initializer {
+        __UUPSUpgradeable_init();
+        __Ownable_init(msg.sender);
 
         if (config.stableCoin == address(0)) revert ZeroAddressError(); // Add this check
         if (config.anyrand == address(0)) revert ZeroAddressError(); // Check anyrand address
