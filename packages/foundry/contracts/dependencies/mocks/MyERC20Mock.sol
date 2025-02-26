@@ -11,7 +11,9 @@ contract MyERC20Mock is ERC20, ERC20Permit, ERC165 {
         ERC20(name, symbol)
         ERC20Permit(name)
     {
-        _mint(initialAccount, initialBalance);
+        if (initialAccount != address(0)) {
+            _mint(initialAccount, initialBalance);
+        }
     }
 
     function mint(address account, uint256 amount) public {

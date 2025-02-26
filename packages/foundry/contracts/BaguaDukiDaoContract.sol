@@ -10,6 +10,10 @@ import "./libraries/IBaguaDukiDao.sol";
 import "forge-std/console2.sol"; // For Foundry
 // import "@chainlink/contracts/vrf/VRFConsumerBaseV2.sol";
 
+// Import Anyrand interfaces
+import "./dependencies/IRandomiserCallbackV3.sol";
+import "./dependencies/IAnyrand.sol";
+
 // Useful for debugging. Remove when deploying to a live network.
 import "./libraries/UnstoppableDukiDaoConstants.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
@@ -25,9 +29,26 @@ contract BaguaDukiDaoContract is
     // UUPSUpgradeable,
     // OwnableUpgradeable,
     UnstoppableDukiDaoConstants,
-    IUnstoppableDukiDao
+    IUnstoppableDukiDao,
+    IRandomiserCallbackV3
 {
-    IERC20 private stableCoin;
+    // Remove AutomationCompatibleInterface
+
+    address public s_stableCoin;
+    // Anyrand related variables
+    address public s_anyrand;
+
+    uint256 public s_lastRandomnessWillId;
+    uint256 public s_lastRandomnessWillTimestamp;
+    uint256 public s_lastRandomnessWillCallbackTimestamp;
+
+    // Configurable time parameters
+    uint256 public s_minWaitBetweenEvolutions; // Minimum time between evolution attempts (default 7 days)
+    uint256 public s_randomnessRequestDeadline; // Seconds into the future for randomness request deadline (default 300s)
+
+    // These events are already declared in ISharedStructs
+    // event TimedRandomnessRequested(uint256 indexed requestId, uint256 timestamp);
+    // event RandomnessReceived(uint256 indexed requestId, uint256 randomWord, uint256 timestamp);
 
     uint256[8] s_dao_bps_arr;
     // calculate total unit for each trigram dynamically
@@ -35,14 +56,14 @@ contract BaguaDukiDaoContract is
 
     // each
     uint256 public s_dao_born_seconds; // the timestamp when the dao was created
-    uint256 public s_dao_evolve_round; // start from 0,  monotonic increasing step=1
+    uint256 public s_dao_evolve_round; // start from 1,  monotonic increasing step=1
     DaoFairDrop[8] s_dao_fair_drop_arr;
 
     uint256 private s_dao_claimed_amount;
 
     uint256 s_investment_3_fee;
 
-    uint256 s_community_lucky_participant_no;
+    uint256 public s_community_lucky_participant_no;
 
     mapping(address => uint256 claimedEvolveNum) s_earth_0_founders;
 
@@ -58,6 +79,9 @@ contract BaguaDukiDaoContract is
     mapping(address => uint256 claimedEvolveNum) s_alm_nation_6_supporters; // all people inside one country
 
     mapping(address => uint256 claimedEvolveNum) s_alm_world_7_dukiClaimers; // requires hold unstoppable domains owner to be a unique human being, concept now; a user can claim using multiple domains now
+
+    // Keep track of authorized Chainlink Automation addresses
+    address public automationRegistry;
 
     // Reserved storage slots for future upgrades
     // This ensures we can add new storage variables without corrupting existing storage layout
@@ -83,13 +107,18 @@ contract BaguaDukiDaoContract is
         // __Ownable_init(msg.sender);
 
         if (config.stableCoin == address(0)) revert ZeroAddressError(); // Add this check
+        if (config.anyrand == address(0)) revert ZeroAddressError(); // Check anyrand address
 
         s_investment_3_fee = 1000 * ONE_DOLLAR_BASE;
-        s_dao_evolve_round = Initial_Evolve_Round; //  monotonic increasing
+        s_dao_evolve_round = Initial_Evolve_Round; //  monotonic increasing. when it evolves, it will be 2, so could be different from others intial claim round = 1
         s_dao_born_seconds = block.timestamp;
-        console2.log("config.stableCoin 2", config.stableCoin);
 
-        stableCoin = IERC20(config.stableCoin);
+        s_stableCoin = config.stableCoin;
+        s_anyrand = config.anyrand;
+
+        // Initialize time parameters with defaults
+        s_minWaitBetweenEvolutions = 7 days;
+        s_randomnessRequestDeadline = 300; // 5 minutes
 
         s_dao_bps_arr = [
             Initial_0_Founders_Bps,
@@ -121,11 +150,7 @@ contract BaguaDukiDaoContract is
     }
 
     function totalStableCoin() external view returns (uint256) {
-        return stableCoin.balanceOf(address(this));
-    }
-
-    function stableCoinAddress() external view returns (address) {
-        return address(stableCoin);
+        return IERC20(s_stableCoin).balanceOf(address(this));
     }
 
     function baguaDaoUnitCountArr() external view returns (uint256[8] memory) {
@@ -141,11 +166,6 @@ contract BaguaDukiDaoContract is
     }
 
     function buaguaDaoAgg4Me(address user) external view override returns (BaguaDaoAgg memory) {
-        uint256 curEvolveRound = s_dao_evolve_round;
-
-        bool almQualified = true;
-        bool investorClaimedQualified = false;
-
         CommunityParticipation memory participation = s_community_5_Participants[user];
 
         uint256[8] memory userClaimedRoundArr = [
@@ -159,8 +179,6 @@ contract BaguaDukiDaoContract is
             s_alm_world_7_dukiClaimers[user]
         ];
 
-        uint256 lotteryWinnerNumber = s_dao_fair_drop_arr[0].unitNumber;
-
         return BaguaDaoAgg(
             s_dao_born_seconds,
             s_dao_claimed_amount,
@@ -171,60 +189,6 @@ contract BaguaDukiDaoContract is
             userClaimedRoundArr,
             participation
         );
-    }
-
-    /**
-     * daoDistribution
-     */
-    function evolveDaoAndDivideLove(uint256 communityLuckyNumber) external returns (bool, uint256) {
-        // CHECKS
-        uint256 balance = stableCoin.balanceOf(address(this));
-
-        if (balance < DAO_START_EVOLVE_AMOUNT) {
-            console2.log(
-                "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
-            );
-            return (false, s_dao_evolve_round);
-        }
-
-        uint256 distributionAmount = balance - DAO_EVOLVE_LEFT_AMOUNT;
-
-        // EFFECTS
-        s_dao_evolve_round += 1;
-        s_community_lucky_participant_no = communityLuckyNumber;
-
-        DaoFairDrop[8] memory daoFairDrops;
-        //  dukiInAction
-        uint256[8] memory bpsUnitNumArr = s_dao_bps_count_arr;
-
-        // iterate over baguaDaoUnitTotals
-        for (uint256 i = 0; i < 8; i++) {
-            uint256 bpsAmount = (s_dao_bps_arr[i] * distributionAmount) / BPS_PRECISION;
-            uint256 bpsUnitNum = bpsUnitNumArr[i];
-
-            if (SEQ_7_DukiInAction_ALM_World == i) {
-                uint256 almUnitTotalNum = bpsAmount / DukiInAction_StableCoin_Claim_Amount;
-                daoFairDrops[i] = DaoFairDrop(DukiInAction_StableCoin_Claim_Amount, almUnitTotalNum);
-            } else if (SEQ_5_Community_Participants == i) {
-                if (bpsUnitNum <= 0) {
-                    // no one join the community , sad story
-                    continue;
-                }
-                daoFairDrops[i] = DaoFairDrop(bpsAmount, 1);
-            } else {
-                if (bpsUnitNum <= 0) {
-                    continue;
-                }
-                uint256 unitAmount = bpsAmount / bpsUnitNum;
-                daoFairDrops[i] = DaoFairDrop(unitAmount, bpsUnitNum);
-            }
-        }
-
-        // Set the values in batch
-        s_dao_fair_drop_arr = daoFairDrops;
-
-        emit DukiDaoEvolution(s_dao_evolve_round, s_community_lucky_participant_no, daoFairDrops, block.timestamp);
-        return (true, s_dao_evolve_round);
     }
 
     /**
@@ -314,7 +278,7 @@ contract BaguaDukiDaoContract is
         s_dao_claimed_amount += fairDrop.unitAmount;
 
         // INTERACTIONS
-        bool success = stableCoin.transfer(msg.sender, fairDrop.unitAmount);
+        bool success = IERC20(s_stableCoin).transfer(msg.sender, fairDrop.unitAmount);
         if (!success) {
             revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
         }
@@ -372,7 +336,7 @@ contract BaguaDukiDaoContract is
         s_dao_claimed_amount += fairDrop.unitAmount;
 
         // INTERACTIONS
-        bool success = stableCoin.transfer(msg.sender, fairDrop.unitAmount);
+        bool success = IERC20(s_stableCoin).transfer(msg.sender, fairDrop.unitAmount);
         if (!success) {
             revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
         }
@@ -430,16 +394,6 @@ contract BaguaDukiDaoContract is
             revert ClaimedCurrentRoundAlreadyError();
         }
 
-        if (claimedRound > currentEvolveAge) {
-            console2.log(
-                "common_claim joined after current dao distribution, not qualified",
-                msg.sender,
-                claimedRound,
-                currentEvolveAge
-            );
-            revert JoinedAfterCurrentDaoDistribution();
-        }
-
         DaoFairDrop storage fairDrop = s_dao_fair_drop_arr[seq];
         if (fairDrop.unitNumber <= 0) {
             console2.log("error: common_claim no distribution unit left", msg.sender);
@@ -454,7 +408,7 @@ contract BaguaDukiDaoContract is
         console2.log("common_claim", msg.sender, currentEvolveAge, fairDrop.unitAmount);
 
         // INTERACTIONS
-        bool success = stableCoin.transfer(msg.sender, fairDrop.unitAmount);
+        bool success = IERC20(s_stableCoin).transfer(msg.sender, fairDrop.unitAmount);
         if (!success) {
             revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
         }
@@ -463,13 +417,13 @@ contract BaguaDukiDaoContract is
     }
 
     function commonDeductFee(InteractType interactType, uint256 requiredMoney) internal {
-        uint256 allowanceMoney = stableCoin.allowance(msg.sender, address(this));
+        uint256 allowanceMoney = IERC20(s_stableCoin).allowance(msg.sender, address(this));
         if (allowanceMoney < requiredMoney) {
             console2.log("InsufficientAllowance: allowance < required", allowanceMoney, requiredMoney);
             revert InsufficientAllowance(interactType, msg.sender, requiredMoney);
         }
 
-        bool success = stableCoin.transferFrom(msg.sender, address(this), requiredMoney);
+        bool success = IERC20(s_stableCoin).transferFrom(msg.sender, address(this), requiredMoney);
 
         console2.log("CoinReceived, requiredMoney from", success, requiredMoney);
 
@@ -486,5 +440,190 @@ contract BaguaDukiDaoContract is
      */
     receive() external payable { }
 
-    // function claim5_ContributorFairDrop() external override {}
+    modifier maintainerOnly() {
+        if (s_mountain_1_maintainers[msg.sender] == 0) revert OnlyMaintainerOrAutomationCanCall();
+        _;
+    }
+
+    modifier maintainerOrAutomationOnly() {
+        if (
+            s_mountain_1_maintainers[msg.sender] == 0
+                && (automationRegistry != address(0) && msg.sender != automationRegistry)
+        ) {
+            revert OnlyMaintainerOrAutomationCanCall();
+        }
+        _;
+    }
+
+    /**
+     * @notice Updates the minimum wait time between evolution attempts
+     * @param newWaitTime The new minimum wait time in seconds
+     */
+    function setMinWaitBetweenEvolutions(uint256 newWaitTime) external maintainerOnly {
+        s_minWaitBetweenEvolutions = newWaitTime;
+    }
+
+    /**
+     * @notice Updates the randomness request deadline
+     * @param newDeadline The new deadline in seconds
+     */
+    function setRandomnessRequestDeadline(uint256 newDeadline) external maintainerOnly {
+        s_randomnessRequestDeadline = newDeadline;
+    }
+
+    /**
+     * @notice Sets the automation registry address
+     * @param _automationRegistry The address of the automation registry
+     */
+    function setAutomationRegistry(address _automationRegistry) external maintainerOnly {
+        automationRegistry = _automationRegistry;
+    }
+
+    function tryAbortDaoEvolution() external maintainerOnly {
+        s_lastRandomnessWillTimestamp = 0;
+    }
+
+    /**
+     * @notice Function for Chainlink Automation to call on a schedule
+     * @dev This is a time-based function that requests randomness from Anyrand
+     * @return success Whether the randomness request was successful
+     */
+    function requestDaoEvolution(uint256 callbackGasLimit)
+        external
+        payable
+        maintainerOrAutomationOnly
+        returns (uint256)
+    {
+        // Check if minimum wait time has passed since the last callback
+        if (s_lastRandomnessWillCallbackTimestamp > 0) {
+            if (block.timestamp < s_lastRandomnessWillCallbackTimestamp + s_minWaitBetweenEvolutions) {
+                revert MustWaitBetweenEvolutions(
+                    s_lastRandomnessWillCallbackTimestamp, s_minWaitBetweenEvolutions, block.timestamp
+                );
+            }
+        }
+
+        uint256 balance = IERC20(s_stableCoin).balanceOf(address(this));
+        if (balance < DAO_START_EVOLVE_AMOUNT) {
+            console2.log(
+                "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
+            );
+            revert InsufficientBalance(balance, DAO_START_EVOLVE_AMOUNT);
+        }
+
+        // Only proceed if there's no pending request
+        if (s_lastRandomnessWillTimestamp > 0) {
+            revert DaoEvolutionInProgress();
+        }
+
+        // Calculate request price
+        (uint256 requestPrice,) = IAnyrand(s_anyrand).getRequestPrice(callbackGasLimit);
+
+        if (msg.value < requestPrice) {
+            revert InsufficientPayment(msg.value, requestPrice);
+        }
+
+        if (msg.value > requestPrice) {
+            (bool success,) = msg.sender.call{ value: msg.value - requestPrice }("");
+            if (!success) {
+                revert RefundFailed();
+            }
+        }
+
+        // Calculate deadline based on configurable parameter
+        uint256 deadline = block.timestamp + s_randomnessRequestDeadline;
+
+        // Request randomness only once
+        uint256 willId = IAnyrand(s_anyrand).requestRandomness{ value: requestPrice }(deadline, callbackGasLimit);
+
+        // Update state
+        s_lastRandomnessWillId = willId;
+        s_lastRandomnessWillTimestamp = block.timestamp;
+
+        emit DaoEvolutionWilling(willId, block.timestamp);
+        return willId;
+    }
+
+    /**
+     * @notice Receive random number from the Anyrand service
+     * @param requestId The identifier for the original randomness request
+     * @param randomNumber The random value provided
+     */
+    function receiveRandomness(uint256 requestId, uint256 randomNumber) external override {
+        // CHECKS
+        if (msg.sender != s_anyrand) {
+            revert OnlyAnyrandCanCall();
+        }
+
+        // Ensure this is the request we're expecting
+        if (requestId != s_lastRandomnessWillId) {
+            revert UnknownWillId(requestId, s_lastRandomnessWillId);
+        }
+
+        if (s_lastRandomnessWillTimestamp <= 0) {
+            revert NoPendingRandomnessWill();
+        }
+
+        evolveDaoAndDivideLove(randomNumber);
+    }
+
+    function evolveDaoAndDivideLove(uint256 randomNumber) public {
+        uint256 balance = IERC20(s_stableCoin).balanceOf(address(this));
+
+        if (balance < DAO_START_EVOLVE_AMOUNT) {
+            console2.log(
+                "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
+            );
+            revert InsufficientBalance(balance, DAO_START_EVOLVE_AMOUNT);
+        }
+
+        uint256 totalParticipants = s_dao_bps_count_arr[SEQ_5_Community_Participants];
+        if (totalParticipants <= 0) {
+            revert NoParticipants();
+        }
+
+        uint256 luckyNumber = (randomNumber % totalParticipants) + 1;
+        uint256 distributionAmount = balance - DAO_EVOLVE_LEFT_AMOUNT;
+
+        // EFFECTS
+        s_lastRandomnessWillCallbackTimestamp = block.timestamp;
+        s_lastRandomnessWillTimestamp = 0;
+
+        s_dao_evolve_round += 1;
+        s_community_lucky_participant_no = luckyNumber;
+
+        DaoFairDrop[8] memory daoFairDrops;
+        //  dukiInAction
+        uint256[8] memory bpsUnitNumArr = s_dao_bps_count_arr;
+
+        // iterate over baguaDaoUnitTotals
+        for (uint256 i = 0; i < 8; i++) {
+            uint256 bpsAmount = (s_dao_bps_arr[i] * distributionAmount) / BPS_PRECISION;
+            uint256 bpsUnitNum = bpsUnitNumArr[i];
+
+            if (SEQ_7_DukiInAction_ALM_World == i) {
+                uint256 almUnitTotalNum = bpsAmount / DukiInAction_StableCoin_Claim_Amount;
+                daoFairDrops[i] = DaoFairDrop(DukiInAction_StableCoin_Claim_Amount, almUnitTotalNum);
+            } else if (SEQ_5_Community_Participants == i) {
+                if (bpsUnitNum <= 0) {
+                    // no one join the community , sad story
+                    continue;
+                }
+                daoFairDrops[i] = DaoFairDrop(bpsAmount, 1);
+            } else {
+                if (bpsUnitNum <= 0) {
+                    continue;
+                }
+                uint256 unitAmount = bpsAmount / bpsUnitNum;
+                daoFairDrops[i] = DaoFairDrop(unitAmount, bpsUnitNum);
+            }
+        }
+
+        // Set the values in batch
+        s_dao_fair_drop_arr = daoFairDrops;
+
+        emit DaoEvolutionManifestation(
+            s_lastRandomnessWillId, randomNumber, luckyNumber, s_dao_evolve_round, daoFairDrops, block.timestamp
+        );
+    }
 }

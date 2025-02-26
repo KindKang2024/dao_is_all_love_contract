@@ -8,8 +8,6 @@ import "@openzeppelin/contracts/interfaces/IERC20.sol";
 interface IUnstoppableDukiDao is ISharedStructs {
     function totalStableCoin() external view returns (uint256);
 
-    function stableCoinAddress() external view returns (address);
-
     function baguaDaoUnitCountArr() external view returns (uint256[8] memory);
     function baguaDaoFairDropArr() external view returns (DaoFairDrop[8] memory);
     function baguaDaoBpsArr() external view returns (uint256[8] memory);
@@ -39,8 +37,10 @@ interface IUnstoppableDukiDao is ISharedStructs {
     // function approveAsMaintainer(address requestor) external;
     // function approveAsDukiInActionBuilder(address requestor) external;
 
-    function evolveDaoAndDivideLove(uint256 luckyNumber) external returns (bool, uint256);
+    function requestDaoEvolution(uint256 callbackGasLimit) external payable returns (uint256);
+    function tryAbortDaoEvolution() external;
 
+    // Claim functions
     // Claim functions
     function claim7Love_WorldDukiInActionFairDrop() external;
     function claim6Love_NationDukiInActionFairDrop() external;

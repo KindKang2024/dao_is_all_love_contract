@@ -24,14 +24,21 @@ interface IBaguaDukiDao {
     error InvalidTrigramIndexError(); // When trigram index is out of bounds
     error NotOwnerError(); // Message sender is not the owner
     error ClaimedCurrentRoundAlreadyError(); // claimed already
-    error JoinedAfterCurrentDaoDistribution();
-    error ClaimDoNotHaveRole(Trigram t); // claimed already
     error AlreadyInvested();
     error InvestorsFull();
     error InsufficientDistributionAmount(uint256 balance);
     error NoDistributionUnitLeft();
     error LoveAsMoneyIntoDaoRequired();
     error InvalidSignature();
+    error OnlyAutomationCanCall();
+    error DaoEvolutionInProgress();
+    error InsufficientPayment(uint256 provided, uint256 required);
+    error MustWaitBetweenEvolutions(uint256 lastEvolution, uint256 requiredWait, uint256 currentTime);
+    error OnlyAnyrandCanCall();
+    error OnlyMaintainerOrAutomationCanCall();
+    error UnknownWillId(uint256 willId, uint256 expectedWillId);
+    error NoPendingRandomnessWill();
+    error RefundFailed();
 
     event BaguaDukiDaoBpsChanged(uint256[8] oldBpsArr, uint256[8] newBpsArr, uint256 timestamp);
 

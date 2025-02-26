@@ -34,10 +34,11 @@ contract ConfigHelper is Script, ISharedStructs {
         address[] memory maintainers = new address[](maintainersLength);
 
         for (uint256 i = 1; i <= maintainersLength; i++) {
-            console2.log("begin maintainersAddress setup ", i);
             string memory addrString = vm.envString(string.concat("MAINTAINERS_", vm.toString(i)));
             // Convert the string to an address and store it in the array
-            maintainers[i - 1] = address(bytes20(bytes(addrString)));
+            maintainers[i - 1] = vm.parseAddress(addrString);
+            console2.log("maintainersAddress", i, addrString, maintainers[i - 1]);
+            //   maintainersAddress 1 0x70F0f595b9eA2E3602BE780cc65263513A72bba3 0x3078373046306635393562396541324533363032
         }
 
         uint256 creatersLength = vm.envUint("CREATORS_LENGTH");
@@ -46,7 +47,9 @@ contract ConfigHelper is Script, ISharedStructs {
         for (uint256 i = 1; i <= creatersLength; i++) {
             string memory addrString = vm.envString(string.concat("CREATORS_", vm.toString(i)));
             // Convert the string to an address and store it in the array
-            creators[i - 1] = address(bytes20(bytes(addrString)));
+            //   creators[i - 1] = address(bytes20(bytes(addrString))); buggy
+            creators[i - 1] = vm.parseAddress(addrString);
+            console2.log("creatorsAddress", i, addrString, creators[i - 1]);
         }
 
         console2.log("creatorsAddress setup");
@@ -55,8 +58,14 @@ contract ConfigHelper is Script, ISharedStructs {
         // 0xAb005176D74900A9c25fDA144e2f9f329A409166
 
         address stableCoinAddr = getDependencAddress("STABLE_COIN_ERC20_ADDRESS");
+        address anyrandAddr = getDependencAddress("ANYRAND_ADDRESS");
 
-        return NetworkConfig({ stableCoin: stableCoinAddr, maintainers: maintainers, creators: creators });
+        return NetworkConfig({
+            stableCoin: stableCoinAddr,
+            anyrand: anyrandAddr,
+            maintainers: maintainers,
+            creators: creators
+        });
     }
 
     function getDependencAddress(string memory contractName) public view returns (address) {

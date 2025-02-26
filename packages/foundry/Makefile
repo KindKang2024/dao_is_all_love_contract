@@ -71,10 +71,17 @@ lint:
 verify:
 	forge script script/VerifyAll.s.sol --ffi --rpc-url $(RPC_URL)
 
-deploy_stable_coin:
-	forge create  contracts/dependencies/MyERC20Mock.sol:MyERC20Mock \
+deploy_usdt_mock:
+	forge create  contracts/dependencies/mocks/MyERC20Mock.sol:MyERC20Mock \
      --rpc-url $(RPC_URL) \
      --private-key $(DEPLOYER_PRIVATE_KEY) \
 	 --etherscan-api-key $(ETHERSCAN_API_KEY) \
      --constructor-args "USDC" "USDC" $(TEST_INTERACT_ACCOUNT) 1000000000000000000000 \
+	 --verify \
+
+deploy_anyrand_mock:
+	forge create  contracts/dependencies/mocks/AnyrandMock.sol:AnyrandMock \
+     --rpc-url $(RPC_URL) \
+     --private-key $(DEPLOYER_PRIVATE_KEY) \
+	 --etherscan-api-key $(ETHERSCAN_API_KEY) \
 	 --verify \

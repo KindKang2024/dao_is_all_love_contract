@@ -6,6 +6,7 @@ import { IBaguaDukiDao } from "./IBaguaDukiDao.sol";
 interface ISharedStructs is IBaguaDukiDao {
     struct NetworkConfig {
         address stableCoin;
+        address anyrand; // Address of the Anyrand contract for verifiable randomness
         address[] maintainers;
         address[] creators;
     }
@@ -49,8 +50,15 @@ interface ISharedStructs is IBaguaDukiDao {
 
     event ConfigChanged(ConfigChangeType changeType, uint256 previousFee, uint256 newFee, uint256 timestamp);
 
-    event DukiDaoEvolution(
-        uint256 daoEvolveRound, uint256 communityLuckyNumber, DaoFairDrop[8] fairDrops, uint256 timestamp
+    event DaoEvolutionWilling(uint256 willId, uint256 timestamp);
+
+    event DaoEvolutionManifestation(
+        uint256 willId,
+        uint256 randomMutationNumber,
+        uint256 communityLuckyNumber,
+        uint256 daoEvolveRound,
+        DaoFairDrop[8] fairDrops,
+        uint256 timestamp
     );
 
     enum InteractType {
@@ -72,4 +80,6 @@ interface ISharedStructs is IBaguaDukiDao {
     error InsufficientAllowance(InteractType t, address src, uint256 amount);
     error NotHasRole();
     error NotSupported(string actionNeeded);
+    error NoParticipants();
+    error InsufficientBalance(uint256 balance, uint256 required);
 }
