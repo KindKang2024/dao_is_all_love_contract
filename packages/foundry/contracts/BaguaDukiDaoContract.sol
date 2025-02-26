@@ -177,6 +177,19 @@ contract BaguaDukiDaoContract is
             s_alm_world_7_dukiClaimers[user]
         ];
 
+        uint256 currentEvolveRound = s_dao_evolve_round;
+
+        bool[8] memory userQualifiedArr = [
+            userClaimedRoundArr[0] > 0 && userClaimedRoundArr[0] < currentEvolveRound,
+            userClaimedRoundArr[1] > 0 && userClaimedRoundArr[1] < currentEvolveRound,
+            userClaimedRoundArr[2] > 0 && userClaimedRoundArr[2] < currentEvolveRound,
+            userClaimedRoundArr[3] > 0 && userClaimedRoundArr[3] < currentEvolveRound,
+            userClaimedRoundArr[4] > 0 && userClaimedRoundArr[4] < currentEvolveRound,
+            userClaimedRoundArr[5] > 0 && userClaimedRoundArr[5] < currentEvolveRound,
+            userClaimedRoundArr[6] > 0 && userClaimedRoundArr[6] < currentEvolveRound,
+            userClaimedRoundArr[7] < currentEvolveRound
+        ];
+
         return BaguaDaoAgg(
             s_dao_born_seconds,
             s_dao_claimed_amount,
@@ -184,7 +197,7 @@ contract BaguaDukiDaoContract is
             s_dao_bps_count_arr,
             s_dao_fair_drop_arr,
             s_community_lucky_participant_no,
-            userClaimedRoundArr,
+            userQualifiedArr,
             participation
         );
     }

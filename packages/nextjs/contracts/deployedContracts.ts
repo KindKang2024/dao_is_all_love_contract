@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     BaguaDukiDaoContract: {
-      address: "0x90bb87c6258ad0d309d2f3a263d3bc7b0b9f522d",
+      address: "0xe61a6e7442ce84072db14423ffbbe2609908ee38",
       abi: [
         {
           type: "constructor",
@@ -154,9 +154,9 @@ const deployedContracts = {
                   internalType: "uint256",
                 },
                 {
-                  name: "userClaimedRoundArr",
-                  type: "uint256[8]",
-                  internalType: "uint256[8]",
+                  name: "claimQualificationArr",
+                  type: "bool[8]",
+                  internalType: "bool[8]",
                 },
                 {
                   name: "participation",
@@ -1194,11 +1194,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740558836.json",
-      deploymentScript: "Deploy.s.sol",
+      deploymentFile: "run-1740560256.json",
+      deploymentScript: "Upgrade.s.sol",
     },
     MyERC20Mock: {
-      address: "0xb1527802e7800034d6887b0a99a5ad2683184b95",
+      address: "0x7c10a8944baa22a41a51b82dc419e866a04e55db",
       abi: [
         {
           type: "constructor",
@@ -1847,11 +1847,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740558836.json",
+      deploymentFile: "run-1740559814.json",
       deploymentScript: "Deploy.s.sol",
     },
     AnyrandMock: {
-      address: "0x4c073a92b1c8fb55313102ab412fb7f1704bcbdd",
+      address: "0xdc88b5feffd566bfa016b6b9268ea29929e7adf1",
       abi: [
         {
           type: "function",
@@ -2076,77 +2076,12 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740558836.json",
+      deploymentFile: "run-1740559814.json",
       deploymentScript: "Deploy.s.sol",
     },
     ERC1967Proxy: {
-      address: "0x38381d63418ff752dba93ee018e36a6814388fa7",
+      address: "0xd18e3f31bd50b5c6e4cc740cb9ca637f6ecc2944",
       abi: [
-        {
-          type: "constructor",
-          inputs: [
-            {
-              name: "implementation",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "_data",
-              type: "bytes",
-              internalType: "bytes",
-            },
-          ],
-          stateMutability: "payable",
-        },
-        {
-          type: "fallback",
-          stateMutability: "payable",
-        },
-        {
-          type: "event",
-          name: "Upgraded",
-          inputs: [
-            {
-              name: "implementation",
-              type: "address",
-              indexed: true,
-              internalType: "address",
-            },
-          ],
-          anonymous: false,
-        },
-        {
-          type: "error",
-          name: "AddressEmptyCode",
-          inputs: [
-            {
-              name: "target",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-        },
-        {
-          type: "error",
-          name: "ERC1967InvalidImplementation",
-          inputs: [
-            {
-              name: "implementation",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-        },
-        {
-          type: "error",
-          name: "ERC1967NonPayable",
-          inputs: [],
-        },
-        {
-          type: "error",
-          name: "FailedCall",
-          inputs: [],
-        },
         {
           type: "constructor",
           inputs: [],
@@ -2292,9 +2227,9 @@ const deployedContracts = {
                   internalType: "uint256",
                 },
                 {
-                  name: "userClaimedRoundArr",
-                  type: "uint256[8]",
-                  internalType: "uint256[8]",
+                  name: "claimQualificationArr",
+                  type: "bool[8]",
+                  internalType: "bool[8]",
                 },
                 {
                   name: "participation",
@@ -3332,8 +3267,10 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1740558836.json",
+      deploymentFile: "run-1740559814.json",
       deploymentScript: "Deploy.s.sol",
+      isProxy: true,
+      implementationName: "BaguaDukiDaoContract",
     },
   },
   534351: {
@@ -3485,9 +3422,9 @@ const deployedContracts = {
                   internalType: "uint256",
                 },
                 {
-                  name: "userClaimedRoundArr",
-                  type: "uint256[8]",
-                  internalType: "uint256[8]",
+                  name: "claimQualificationArr",
+                  type: "bool[8]",
+                  internalType: "bool[8]",
                 },
                 {
                   name: "participation",

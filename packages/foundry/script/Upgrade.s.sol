@@ -7,6 +7,9 @@ import "../contracts/BaguaDukiDaoContract.sol";
 import { DevOpsTools } from "lib/foundry-devops/src/DevOpsTools.sol";
 import { ERC1967Proxy } from "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
+/**
+ * yarn deploy --network localhost --file Upgrade.s.sol
+ */
 contract UpgradeScript is Script {
     function run() public returns (address, address) {
         address mostRecentlyDeployedProxy = DevOpsTools.get_most_recent_deployment("ERC1967Proxy", block.chainid);

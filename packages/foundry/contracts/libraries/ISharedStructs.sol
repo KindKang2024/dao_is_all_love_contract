@@ -26,7 +26,7 @@ interface ISharedStructs is IBaguaDukiDao {
         DaoFairDrop[8] fairDrops;
         uint256 communityLuckyNumber;
         // user info
-        uint256[8] userClaimedRoundArr;
+        bool[8] claimQualificationArr;
         CommunityParticipation participation;
     }
 

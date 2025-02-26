@@ -135,9 +135,40 @@ function getInheritedFunctions(mainArtifact) {
   return inheritedFunctions;
 }
 
+// Function to find the implementation contract for a proxy
+function findProxyImplementation(deploymentHistory, chainId) {
+  // Look for the implementation contract in the deployment transactions
+  for (const deployment of deploymentHistory) {
+    if (deployment.contractName === "ERC1967Proxy") {
+      // Try to find the implementation address from the constructor arguments
+      const tx = deployment.transaction;
+      if (tx && tx.arguments && tx.arguments.length >= 1) {
+        // The first argument to ERC1967Proxy constructor is the implementation address
+        const implementationAddress = tx.arguments[0];
+        
+        // Find the contract at this address
+        const implementationDeployment = deploymentHistory.find(
+          (d) => d.address.toLowerCase() === implementationAddress.toLowerCase()
+        );
+        
+        if (implementationDeployment) {
+          return {
+            proxyAddress: deployment.address,
+            implementationName: implementationDeployment.contractName,
+            implementationAddress: implementationDeployment.address
+          };
+        }
+      }
+    }
+  }
+  
+  return null;
+}
+
 function processAllDeployments(broadcastPath) {
   const scriptFolders = getDirectories(broadcastPath);
   const allDeployments = new Map();
+  const proxyImplementations = new Map(); // Map to store proxy -> implementation relationships
 
   scriptFolders.forEach((scriptFolder) => {
     const scriptPath = join(broadcastPath, scriptFolder);
@@ -146,6 +177,13 @@ function processAllDeployments(broadcastPath) {
     chainFolders.forEach((chainId) => {
       const chainPath = join(scriptPath, chainId);
       const deploymentHistory = getDeploymentHistory(chainPath);
+
+      // Find proxy implementations first
+      const proxyInfo = findProxyImplementation(deploymentHistory, chainId);
+      if (proxyInfo) {
+        proxyImplementations.set(`${chainId}-ERC1967Proxy`, proxyInfo.implementationName);
+        console.log(`Found proxy implementation for chain ${chainId}: ERC1967Proxy -> ${proxyInfo.implementationName}`);
+      }
 
       deploymentHistory.forEach((deployment) => {
         const timestamp = parseInt(
@@ -180,13 +218,46 @@ function processAllDeployments(broadcastPath) {
         allContracts[chainId] = {};
       }
 
-      allContracts[chainId][contractName] = {
-        address: deployment.address,
-        abi: artifact.abi,
-        inheritedFunctions: getInheritedFunctions(artifact),
-        deploymentFile: deployment.deploymentFile,
-        deploymentScript: deployment.deploymentScript,
-      };
+      // Check if this is a proxy contract
+      const isProxy = contractName === "ERC1967Proxy";
+      const implementationName = proxyImplementations.get(`${chainId}-ERC1967Proxy`);
+      
+      if (isProxy && implementationName) {
+        // Get the implementation artifact
+        const implementationArtifact = getArtifactOfContract(implementationName);
+        
+        if (implementationArtifact) {
+          // Use the implementation's ABI for the proxy
+          allContracts[chainId][contractName] = {
+            address: deployment.address,
+            abi: implementationArtifact.abi, // Use implementation ABI
+            inheritedFunctions: getInheritedFunctions(implementationArtifact),
+            deploymentFile: deployment.deploymentFile,
+            deploymentScript: deployment.deploymentScript,
+            isProxy: true,
+            implementationName: implementationName,
+          };
+          console.log(`Using ${implementationName} ABI for ERC1967Proxy on chain ${chainId}`);
+        } else {
+          // Fallback to proxy ABI if implementation artifact not found
+          allContracts[chainId][contractName] = {
+            address: deployment.address,
+            abi: artifact.abi,
+            inheritedFunctions: getInheritedFunctions(artifact),
+            deploymentFile: deployment.deploymentFile,
+            deploymentScript: deployment.deploymentScript,
+          };
+        }
+      } else {
+        // Regular contract (not a proxy)
+        allContracts[chainId][contractName] = {
+          address: deployment.address,
+          abi: artifact.abi,
+          inheritedFunctions: getInheritedFunctions(artifact),
+          deploymentFile: deployment.deploymentFile,
+          deploymentScript: deployment.deploymentScript,
+        };
+      }
     }
   });
 
