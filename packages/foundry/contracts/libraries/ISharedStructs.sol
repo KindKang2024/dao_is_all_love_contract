@@ -18,6 +18,7 @@ interface ISharedStructs is IBaguaDukiDao {
     }
 
     struct BaguaDaoAgg {
+        uint256 evolveNum;
         uint256 bornSeconds;
         uint256 totalClaimedAmount;
         uint256[8] bpsArr;
@@ -39,7 +40,7 @@ interface ISharedStructs is IBaguaDukiDao {
         LotteryEntryFee
     }
 
-    event DukiInActionEvent(
+    event DukiInAction(
         address user,
         InteractType interactType,
         uint256 daoEvolveRound,
@@ -62,6 +63,8 @@ interface ISharedStructs is IBaguaDukiDao {
     );
 
     enum InteractType {
+        In_To_Divine,
+        In_To_Invest,
         Out_Claim_As_Duki4World,
         Out_Claim_As_Duki4Nation,
         Out_Claim_As_CommunityLottery,
@@ -69,9 +72,7 @@ interface ISharedStructs is IBaguaDukiDao {
         Out_Claim_As_Contributor,
         Out_Claim_As_Investor,
         Out_Claim_As_Maintainer,
-        Out_Claim_As_Founder,
-        In_To_Invest,
-        In_To_Divine
+        Out_Claim_As_Founder
     }
 
     error InvertorsFullExceed369(); // maxNum =  369

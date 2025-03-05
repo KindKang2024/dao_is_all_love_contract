@@ -299,6 +299,7 @@ function main() {
   });
 
   const NEXTJS_TARGET_DIR = "../nextjs/contracts/";
+  const REACTJS_TARGET_DIR = "../reactjs/src/contracts/";
 
   // Ensure target directories exist
   if (!existsSync(NEXTJS_TARGET_DIR)) {
@@ -329,6 +330,13 @@ function main() {
 
   writeFileSync(
     `${NEXTJS_TARGET_DIR}deployedContracts.ts`,
+    format(fileTemplate("~~/utils/scaffold-eth/contract"), {
+      parser: "typescript",
+    })
+  );
+
+  writeFileSync(
+    `${REACTJS_TARGET_DIR}deployedContracts.ts`,
     format(fileTemplate("~~/utils/scaffold-eth/contract"), {
       parser: "typescript",
     })

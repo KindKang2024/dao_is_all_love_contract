@@ -191,6 +191,7 @@ contract BaguaDukiDaoContract is
         ];
 
         return BaguaDaoAgg(
+            s_dao_evolve_round,
             s_dao_born_seconds,
             s_dao_claimed_amount,
             s_dao_bps_arr,
@@ -294,7 +295,7 @@ contract BaguaDukiDaoContract is
             revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
         }
 
-        emit DukiInActionEvent(
+        emit DukiInAction(
             msg.sender,
             InteractType.Out_Claim_As_Duki4World,
             s_dao_evolve_round,
@@ -353,7 +354,7 @@ contract BaguaDukiDaoContract is
         }
         console2.log("claim3_CommunityLotteryDrop", msg.sender, fairDrop.unitAmount);
 
-        emit DukiInActionEvent(
+        emit DukiInAction(
             msg.sender,
             InteractType.Out_Claim_As_CommunityLottery,
             s_dao_evolve_round,
@@ -424,7 +425,7 @@ contract BaguaDukiDaoContract is
             revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
         }
 
-        emit DukiInActionEvent(msg.sender, interactType, currentEvolveAge, fairDrop.unitAmount, 1, block.timestamp);
+        emit DukiInAction(msg.sender, interactType, currentEvolveAge, fairDrop.unitAmount, 1, block.timestamp);
     }
 
     function commonDeductFee(InteractType interactType, uint256 requiredMoney) internal {
@@ -439,7 +440,7 @@ contract BaguaDukiDaoContract is
         console2.log("CoinReceived, requiredMoney from", success, requiredMoney);
 
         if (success) {
-            emit DukiInActionEvent(msg.sender, interactType, s_dao_evolve_round, requiredMoney, 1, block.timestamp);
+            emit DukiInAction(msg.sender, interactType, s_dao_evolve_round, requiredMoney, 1, block.timestamp);
         } else {
             console2.log("TransferFailed:TransferFailed");
             revert TransferFailed(CoinFlowType.In, msg.sender, requiredMoney);
