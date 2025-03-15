@@ -14,15 +14,22 @@ interface IUnstoppableDukiDao is ISharedStructs {
 
     function buaguaDaoAgg4Me(address user) external view returns (BaguaDaoAgg memory);
 
-    // 还愿, money can be 0
-    function payLoveIntoDao(
-        string calldata willMessage,
-        string calldata willSignature,
-        uint256 willDivinationResult,
-        uint256 loveAsMoneyAmount
+    function connectDaoToDivine(
+        bytes16 diviUuid,
+        bytes16 diviWillHash,
+        bytes16 diviWillAnswer,
+        uint256 willPowerAmount
     ) external;
 
-    function payToInvest() external;
+    // after verified the divination, the user can vow to the dao
+    function vowDaoDivination(
+        bytes16 diviUuid,
+        KnownStatus knownStatus
+    ) external;
+
+
+
+    function connectDaoToInvest() external;
 
     // the following function needs to verified by the founder or maintainer,
     // ultimately all determined by the founder's will, I do not believe that all need to be decentralized.
@@ -40,7 +47,6 @@ interface IUnstoppableDukiDao is ISharedStructs {
     function requestDaoEvolution(uint256 callbackGasLimit) external payable returns (uint256);
     function tryAbortDaoEvolution() external;
 
-    // Claim functions
     // Claim functions
     function claim7Love_WorldDukiInActionFairDrop() external;
     function claim6Love_NationDukiInActionFairDrop() external;

@@ -17,10 +17,25 @@ interface ISharedStructs is IBaguaDukiDao {
         uint256 luckyClaimedRound;
     }
 
+    enum KnownStatus {
+        Unknown,
+        KnownRight,
+        KnownWrong,
+        Deprecated
+    }
+
+    struct Divination {
+        KnownStatus knownStatus;
+        bytes16 diviWillHash;
+        bytes16 diviWillAnswer;
+        uint256 willOfLovePowerAmount;
+    }
+
     struct BaguaDaoAgg {
         uint256 evolveNum;
         uint256 bornSeconds;
         uint256 totalClaimedAmount;
+        uint256 stableCoinBalance;
         uint256[8] bpsArr;
         uint256[8] bpsNumArr; // how many people in each bps
         // current distribution info
@@ -62,6 +77,20 @@ interface ISharedStructs is IBaguaDukiDao {
         uint256 timestamp
     );
 
+    event ConnectDaoEvent(
+        address diviner,
+        bytes16 diviId,
+        bytes16 diviWillHash,
+        uint256 timestamp
+    );
+    event VowDaoEvent(
+        address diviner,
+        bytes16 diviId,
+        KnownStatus knownStatus,
+        uint256 timestamp
+    );
+
+
     enum InteractType {
         In_To_Divine,
         In_To_Invest,
@@ -76,6 +105,7 @@ interface ISharedStructs is IBaguaDukiDao {
     }
 
     error InvertorsFullExceed369(); // maxNum =  369
+    error NotZkProvedHuman();
     error LateForCurrentClaim(uint256 currentClaimRound, uint256 lateEntryRound);
     error NotQualifiedForClaim(InteractType t); // Message sender is not the vip supporter
     error InsufficientAllowance(InteractType t, address src, uint256 amount);
@@ -83,4 +113,5 @@ interface ISharedStructs is IBaguaDukiDao {
     error NotSupported(string actionNeeded);
     error NoParticipants();
     error InsufficientBalance(uint256 balance, uint256 required);
+    error InvalidKnownStatus();
 }

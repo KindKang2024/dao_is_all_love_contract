@@ -29,7 +29,7 @@ contract DeployScript is ISharedStructs, Script {
         vm.startBroadcast();
         // First deploy the stablecoin if needed
         if (config.stableCoin == address(0)) {
-            MyERC20Mock newStableCoin = new MyERC20Mock("USDT", "USDT", config.maintainers[0], 10000 * 10 ** 6);
+            MyERC20Mock newStableCoin = new MyERC20Mock("USDC", "USDC", config.maintainers[0], 10000 * 10 ** 6);
             config.stableCoin = address(newStableCoin);
         }
         if (config.anyrand == address(0)) {

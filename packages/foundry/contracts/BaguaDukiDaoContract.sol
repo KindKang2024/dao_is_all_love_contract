@@ -1,16 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
-// pragma solidity 0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "./libraries/IBaguaDukiDao.sol";
-import "forge-std/console2.sol"; // For Foundry
+// import "forge-std/console2.sol"; // For Foundry
 
 import "./dependencies/IRandomiserCallbackV3.sol";
 import "./dependencies/IAnyrand.sol";
+import "./dependencies/IZkHumanRegistry.sol";
 
 // Useful for debugging. Remove when deploying to a live network.
 import "./libraries/UnstoppableDukiDaoConstants.sol";
@@ -44,9 +44,6 @@ contract BaguaDukiDaoContract is
     uint256 public s_minWaitBetweenEvolutions; // Minimum time between evolution attempts (default 7 days)
     uint256 public s_randomnessRequestDeadline; // Seconds into the future for randomness request deadline (default 300s)
 
-    // These events are already declared in ISharedStructs
-    // event TimedRandomnessRequested(uint256 indexed requestId, uint256 timestamp);
-    // event RandomnessReceived(uint256 indexed requestId, uint256 randomWord, uint256 timestamp);
 
     uint256[8] s_dao_bps_arr;
     // calculate total unit for each trigram dynamically
@@ -74,12 +71,19 @@ contract BaguaDukiDaoContract is
 
     mapping(address => CommunityParticipation) s_community_5_Participants;
 
+    mapping(address => mapping(bytes16 => Divination)) s_dao_love_connections;
+
     mapping(address => uint256 claimedEvolveNum) s_alm_nation_6_supporters; // all people inside one country
 
-    mapping(address => uint256 claimedEvolveNum) s_alm_world_7_dukiClaimers; // requires hold unstoppable domains owner to be a unique human being, concept now; a user can claim using multiple domains now
+    mapping(address => uint256 claimedEvolveNum) s_alm_world_7_dukiClaimers; // requires to be a unique human being, concept now; 
 
-    // Keep track of authorized Chainlink Automation addresses
+
+    // Keep track of authorized Automation addresses
     address public automationRegistry;
+
+    // just a slot , currently not in use IZkHumanRegistry
+    address public humanZkpRegistry;
+
 
     // Reserved storage slots for future upgrades
     // This ensures we can add new storage variables without corrupting existing storage layout
@@ -93,6 +97,12 @@ contract BaguaDukiDaoContract is
     // constructor(NetworkConfig memory config) {
     //     initialize(config);
     // }
+
+    function isZkProvedHuman(address user) private view returns (bool) {
+        // currently do not have such service backedup by true authority todo : DUKI in Action need this
+        // here we just check the balance of the user is greater than 1 dollar. Useless but just for the concept
+        return IERC20(s_stableCoin).balanceOf(user) > ONE_DOLLAR_BASE;
+    }
 
     // Authorization function for contract upgrades
     function _authorizeUpgrade(address newImplementation) internal pure override {
@@ -179,6 +189,10 @@ contract BaguaDukiDaoContract is
 
         uint256 currentEvolveRound = s_dao_evolve_round;
 
+        uint256 stableCoinBalance = IERC20(s_stableCoin).balanceOf(user);
+        bool isHuman = stableCoinBalance > ONE_DOLLAR_BASE;
+
+
         bool[8] memory userQualifiedArr = [
             userClaimedRoundArr[0] > 0 && userClaimedRoundArr[0] < currentEvolveRound,
             userClaimedRoundArr[1] > 0 && userClaimedRoundArr[1] < currentEvolveRound,
@@ -187,13 +201,15 @@ contract BaguaDukiDaoContract is
             userClaimedRoundArr[4] > 0 && userClaimedRoundArr[4] < currentEvolveRound,
             userClaimedRoundArr[5] > 0 && userClaimedRoundArr[5] < currentEvolveRound,
             userClaimedRoundArr[6] > 0 && userClaimedRoundArr[6] < currentEvolveRound,
-            userClaimedRoundArr[7] < currentEvolveRound
+            // userClaimedRoundArr[7] < currentEvolveRound && isZkProvedHuman(user)
+            userClaimedRoundArr[7] < currentEvolveRound && isHuman
         ];
 
         return BaguaDaoAgg(
             s_dao_evolve_round,
             s_dao_born_seconds,
             s_dao_claimed_amount,
+            stableCoinBalance,
             s_dao_bps_arr,
             s_dao_bps_count_arr,
             s_dao_fair_drop_arr,
@@ -206,11 +222,11 @@ contract BaguaDukiDaoContract is
     /**
      *
      */
-    function payLoveIntoDao(
-        string calldata willMessage,
-        string calldata willSignature,
-        uint256 willDivinationResult,
-        uint256 loveAsMoneyAmount
+    function connectDaoToDivine(
+        bytes16 diviUuid,
+        bytes16 diviWillHash,
+        bytes16 diviWillAnswer,
+        uint256 willPowerAmount // money amount
     ) external {
         // CHECKS
         if (msg.sender == address(0)) {
@@ -218,7 +234,7 @@ contract BaguaDukiDaoContract is
         }
 
         // money must amount must > 0
-        if (loveAsMoneyAmount <= 0) {
+        if (willPowerAmount <= 0) {
             revert LoveAsMoneyIntoDaoRequired();
         }
         // check the signature using erc_recover
@@ -231,12 +247,40 @@ contract BaguaDukiDaoContract is
         if (s_community_5_Participants[msg.sender].participantNo <= 0) {
             s_dao_bps_count_arr[SEQ_5_Community_Participants] += 1;
             s_community_5_Participants[msg.sender] =
-                CommunityParticipation(s_dao_bps_count_arr[SEQ_5_Community_Participants], loveAsMoneyAmount, 0);
+                CommunityParticipation(s_dao_bps_count_arr[SEQ_5_Community_Participants], willPowerAmount, 0);
         } else {
-            s_community_5_Participants[msg.sender].participantAmount += loveAsMoneyAmount;
+            s_community_5_Participants[msg.sender].participantAmount += willPowerAmount;
         }
-        commonDeductFee(InteractType.In_To_Divine, loveAsMoneyAmount);
+        commonDeductFee(InteractType.In_To_Divine, willPowerAmount);
+
+        // save the divination info
+        s_dao_love_connections[msg.sender][diviUuid] = Divination(
+            KnownStatus.Unknown,
+            diviWillHash,
+            diviWillAnswer,
+            willPowerAmount
+        );
+        emit ConnectDaoEvent(msg.sender, diviUuid, diviWillHash, block.timestamp);
+
     }
+
+  
+
+    // after verified the divination, the user can vow to the dao
+    function vowDaoDivination(
+        bytes16 diviUuid,
+        KnownStatus knownStatus
+    ) external {
+        if (knownStatus == KnownStatus.Unknown) {
+            revert InvalidKnownStatus();
+        }
+
+        // save the vow info
+        s_dao_love_connections[msg.sender][diviUuid].knownStatus = knownStatus;
+        emit VowDaoEvent(msg.sender, diviUuid, knownStatus, block.timestamp);
+    }
+
+
 
     function isStructExist(CommunityParticipation memory qualification) internal pure returns (bool) {
         return qualification.participantNo > 0;
@@ -245,7 +289,7 @@ contract BaguaDukiDaoContract is
     /**
      * a way to support, at least 10% of the total project revenue will be shared with the investors
      */
-    function payToInvest() external {
+    function connectDaoToInvest() external {
         // CHECKS
         if (s_dao_bps_count_arr[SEQ_2_Water_Investors] >= MaxInvestorsTotal) {
             revert InvestorsFull();
@@ -258,13 +302,11 @@ contract BaguaDukiDaoContract is
         // EFFECTS
         s_dao_bps_count_arr[SEQ_2_Water_Investors] += 1;
         s_water_2_investors[msg.sender] = Initial_Evolve_Round;
-        console2.log("payToInvest", msg.sender, s_dao_bps_count_arr[SEQ_2_Water_Investors]);
+        // console2.log("payToInvest", msg.sender, s_dao_bps_count_arr[SEQ_2_Water_Investors]);
 
         // INTERACTIONS
         commonDeductFee(InteractType.In_To_Invest, BASIC_INVEST_AMOUNT);
 
-        // FIXME: emit event
-        // emit InvestorAdded(msg.sender, s_dao_bps_count_arr[SEQ_2_Water_Investors]);
     }
 
     /**
@@ -273,14 +315,20 @@ contract BaguaDukiDaoContract is
     function claim7Love_WorldDukiInActionFairDrop() external {
         uint256 claimedRound = s_alm_world_7_dukiClaimers[msg.sender];
         if (claimedRound >= s_dao_evolve_round) {
-            console2.log("claim1_AlmDukiInActionFairDrop already claimed", msg.sender, claimedRound, s_dao_evolve_round);
+            // console2.log("claim1_AlmDukiInActionFairDrop already claimed", msg.sender, claimedRound, s_dao_evolve_round);
             revert ClaimedCurrentRoundAlreadyError();
+        }
+
+        bool isHuman = isZkProvedHuman(msg.sender);
+        if (!isHuman) {
+            // console2.log("claim1_AlmDukiInActionFairDrop not zk proved human", msg.sender);
+            revert NotZkProvedHuman();
         }
 
         DaoFairDrop storage fairDrop = s_dao_fair_drop_arr[SEQ_7_DukiInAction_ALM_World];
 
         if (fairDrop.unitNumber <= 0) {
-            console2.log("claim1_AlmDukiInActionFairDrop no distribution unit left", msg.sender);
+            // console2.log("claim1_AlmDukiInActionFairDrop no distribution unit left", msg.sender);
             revert NoDistributionUnitLeft();
         }
 
@@ -316,7 +364,7 @@ contract BaguaDukiDaoContract is
         CommunityParticipation memory participation = s_community_5_Participants[msg.sender];
 
         if (participation.participantNo == 0) {
-            console2.log("claim3_CommunityLotteryDrop not in lottery community", msg.sender);
+            // console2.log("claim3_CommunityLotteryDrop not in lottery community", msg.sender);
             revert NotQualifiedForClaim(InteractType.Out_Claim_As_CommunityLottery);
         }
 
@@ -325,34 +373,35 @@ contract BaguaDukiDaoContract is
         }
 
         if (participation.luckyClaimedRound >= s_dao_evolve_round) {
-            console2.log(
-                "claim3_CommunityLotteryDrop already claimed",
-                msg.sender,
-                participation.luckyClaimedRound,
-                s_dao_evolve_round
-            );
+            // console2.log(
+            //     "claim3_CommunityLotteryDrop already claimed",
+            //     msg.sender,
+            //     participation.luckyClaimedRound,
+            //     s_dao_evolve_round
+            // );
             revert ClaimedCurrentRoundAlreadyError();
         }
 
         DaoFairDrop memory fairDrop = s_dao_fair_drop_arr[SEQ_5_Community_Participants];
         if (fairDrop.unitNumber <= 0) {
-            console2.log("claim3_CommunityLotteryDrop no distribution unit left", msg.sender);
+            // console2.log("claim3_CommunityLotteryDrop no distribution unit left", msg.sender);
             revert NoDistributionUnitLeft();
         }
 
+        uint256 maxClaimAmount = participation.participantAmount * 1000;
+        uint256 claimAmount = maxClaimAmount > fairDrop.unitAmount ? fairDrop.unitAmount : maxClaimAmount;
+
         // EFFECTS
-        // dropSummary.unitNumber -= 1;
-        // participation.claimedRound = s_dao_evovle_block_num;
         s_dao_fair_drop_arr[SEQ_5_Community_Participants].unitNumber -= 1;
         s_community_5_Participants[msg.sender].luckyClaimedRound = s_dao_evolve_round;
         s_dao_claimed_amount += fairDrop.unitAmount;
 
         // INTERACTIONS
-        bool success = IERC20(s_stableCoin).transfer(msg.sender, fairDrop.unitAmount);
+        bool success = IERC20(s_stableCoin).transfer(msg.sender, claimAmount);
         if (!success) {
-            revert TransferFailed(CoinFlowType.Out, msg.sender, fairDrop.unitAmount);
+            revert TransferFailed(CoinFlowType.Out, msg.sender, claimAmount);
         }
-        console2.log("claim3_CommunityLotteryDrop", msg.sender, fairDrop.unitAmount);
+        // console2.log("claim3_CommunityLotteryDrop", msg.sender, fairDrop.unitAmount);
 
         emit DukiInAction(
             msg.sender,
@@ -397,18 +446,18 @@ contract BaguaDukiDaoContract is
         uint256 currentEvolveAge = s_dao_evolve_round;
 
         if (claimedRound == 0) {
-            console2.log("common_claim is not qualified", msg.sender, claimedRound);
+            // console2.log("common_claim is not qualified", msg.sender, claimedRound);
             revert NotQualifiedForClaim(interactType);
         }
 
         if (claimedRound == currentEvolveAge) {
-            console2.log("common_claim already claimed", msg.sender, claimedRound, currentEvolveAge);
+            // console2.log("common_claim already claimed", msg.sender, claimedRound, currentEvolveAge);
             revert ClaimedCurrentRoundAlreadyError();
         }
 
         DaoFairDrop storage fairDrop = s_dao_fair_drop_arr[seq];
         if (fairDrop.unitNumber <= 0) {
-            console2.log("error: common_claim no distribution unit left", msg.sender);
+            // console2.log("error: common_claim no distribution unit left", msg.sender);
             revert NoDistributionUnitLeft();
         }
 
@@ -417,7 +466,7 @@ contract BaguaDukiDaoContract is
         claimMap[msg.sender] = currentEvolveAge;
         s_dao_claimed_amount += fairDrop.unitAmount;
 
-        console2.log("common_claim", msg.sender, currentEvolveAge, fairDrop.unitAmount);
+        // console2.log("common_claim", msg.sender, currentEvolveAge, fairDrop.unitAmount);
 
         // INTERACTIONS
         bool success = IERC20(s_stableCoin).transfer(msg.sender, fairDrop.unitAmount);
@@ -431,18 +480,17 @@ contract BaguaDukiDaoContract is
     function commonDeductFee(InteractType interactType, uint256 requiredMoney) internal {
         uint256 allowanceMoney = IERC20(s_stableCoin).allowance(msg.sender, address(this));
         if (allowanceMoney < requiredMoney) {
-            console2.log("InsufficientAllowance: allowance < required", allowanceMoney, requiredMoney);
+            // console2.log("InsufficientAllowance: allowance < required", allowanceMoney, requiredMoney);
             revert InsufficientAllowance(interactType, msg.sender, requiredMoney);
         }
 
         bool success = IERC20(s_stableCoin).transferFrom(msg.sender, address(this), requiredMoney);
 
-        console2.log("CoinReceived, requiredMoney from", success, requiredMoney);
-
+        // console2.log("CoinReceived, requiredMoney from", success, requiredMoney);
         if (success) {
             emit DukiInAction(msg.sender, interactType, s_dao_evolve_round, requiredMoney, 1, block.timestamp);
         } else {
-            console2.log("TransferFailed:TransferFailed");
+            // console2.log("TransferFailed:TransferFailed");
             revert TransferFailed(CoinFlowType.In, msg.sender, requiredMoney);
         }
     }
@@ -517,9 +565,9 @@ contract BaguaDukiDaoContract is
 
         uint256 balance = IERC20(s_stableCoin).balanceOf(address(this));
         if (balance < DAO_START_EVOLVE_AMOUNT) {
-            console2.log(
-                "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
-            );
+            // console2.log(
+            //     "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
+            // );
             revert InsufficientBalance(balance, DAO_START_EVOLVE_AMOUNT);
         }
 
@@ -583,9 +631,9 @@ contract BaguaDukiDaoContract is
         uint256 balance = IERC20(s_stableCoin).balanceOf(address(this));
 
         if (balance < DAO_START_EVOLVE_AMOUNT) {
-            console2.log(
-                "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
-            );
+            // console2.log(
+            //     "balance < DAO_START_EVOLVE_AMOUNT, skip evolveDaoThenDistribute", balance, DAO_START_EVOLVE_AMOUNT
+            // );
             revert InsufficientBalance(balance, DAO_START_EVOLVE_AMOUNT);
         }
 

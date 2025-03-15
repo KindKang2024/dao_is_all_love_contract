@@ -22,16 +22,17 @@ abstract contract UnstoppableDukiDaoConstants {
     uint256 constant DAO_START_EVOLVE_AMOUNT = 100 * ONE_DOLLAR_BASE;
     uint256 constant DAO_EVOLVE_LEFT_AMOUNT = 8 * ONE_DOLLAR_BASE;
 
-    uint256 constant MIN_DukiInAction_Bps = 250;
-    uint256 constant Initial_0_Founders_Bps = 1000; // [2.5%- ]  10% - just for all lives/wallets that have a  unstoppable domain (human unique proof is needed serious DukiInAction in AllLivesMatter.World)
-    uint256 constant Initial_1_Maintainers_Bps = 1000; // 15% avenues goes to lottery, 1/10000 chance to win, max 2, subscribe to join or pay to join
-    uint256 constant Initial_2_Investors_Bps = 2000; // 20% for lifetime subscription, early supporters
-    uint256 constant Initial_3_Contributors_Bps = 2000; // 20% for lifetime subscription, early supporters
 
-    uint256 constant Initial_4_Builders_Bps = 2000; // 20% for lifetime subscription, early supporters
-    uint256 constant Initial_5_Community_Bps = 1000;
-    uint256 constant Initial_6_ALM_Nation_DukiInAction_Bps = 1000;
-    uint256 constant Initial_7_ALM_World_DukiInAction_Bps = 1000;
+    uint256 constant Initial_0_Founders_Bps = 250; // [2.5% ]  
+    uint256 constant Initial_1_Maintainers_Bps = 3000; // hopes it cover the cost and make it survive
+    uint256 constant Initial_2_Investors_Bps = 2500; // 25%  max-cap $369*100 for 25% 
+    uint256 constant Initial_3_Contributors_Bps = 750; // 
+
+    uint256 constant Initial_4_Builders_Bps = 500;  
+    uint256 constant Initial_5_Community_Bps = 2000;
+    uint256 constant Initial_6_ALM_Nation_DukiInAction_Bps = 0; // 0 for now, need nation back up the human proof 
+    uint256 constant Initial_7_ALM_World_DukiInAction_Bps = 1000; //  serious business should be 1%-2.5%.  here 10% since this is a poc and advocate
+    uint256 constant MIN_DukiInAction_Bps = 100; // 1%
 
     // here use the order start from KUN, like how love evolves from earth to heaven, play nicely with binary its form. It is natural to think so, we have to love the ego will first.
     // Also, I do not think it violates the order of traditional Chinese culture. The love for all lives is the highest form I could imagine. It is no 1 from that perspective.
