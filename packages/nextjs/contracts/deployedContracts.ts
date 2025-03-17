@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     MyERC20Mock: {
-      address: "0xf7cd8fa9b94db2aa972023b379c7f72c65e4de9d",
+      address: "0x82c6d3ed4cd33d8ec1e51d0b5cc1d822eaa0c3dc",
       abi: [
         {
           type: "constructor",
@@ -656,11 +656,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742014773.json",
+      deploymentFile: "run-1742139777.json",
       deploymentScript: "Deploy.s.sol",
     },
     AnyrandMock: {
-      address: "0x12975173b87f7595ee45dffb2ab812ece596bf84",
+      address: "0x05b4cb126885fb10464fdd12666feb25e2563b76",
       abi: [
         {
           type: "function",
@@ -885,11 +885,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742014773.json",
+      deploymentFile: "run-1742139777.json",
       deploymentScript: "Deploy.s.sol",
     },
     BaguaDukiDaoContract: {
-      address: "0x82dc47734901ee7d4f4232f398752cb9dd5daccc",
+      address: "0x2a264f26859166c5bf3868a54593ee716aebc848",
       abi: [
         {
           type: "constructor",
@@ -1135,7 +1135,14 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "connectDaoToDivine",
+          name: "connectDaoToInvest",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "connectDaoToKnow",
           inputs: [
             {
               name: "diviUuid",
@@ -1154,26 +1161,6 @@ const deployedContracts = {
             },
             {
               name: "willPowerAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "connectDaoToInvest",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "evolveDaoAndDivideLove",
-          inputs: [
-            {
-              name: "randomNumber",
               type: "uint256",
               internalType: "uint256",
             },
@@ -1470,19 +1457,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "totalStableCoin",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -1521,7 +1495,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "vowDaoDivination",
+          name: "vowDaoManifestation",
           inputs: [
             {
               name: "diviUuid",
@@ -1626,7 +1600,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "DaoEvolutionManifestation",
+          name: "DaoEvolutionRepresentation",
           inputs: [
             {
               name: "willId",
@@ -2189,11 +2163,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742014773.json",
+      deploymentFile: "run-1742139777.json",
       deploymentScript: "Deploy.s.sol",
     },
     ERC1967Proxy: {
-      address: "0x196dbcbb54b8ec4958c959d8949ebfe87ac2aaaf",
+      address: "0xd04ff4a75edd737a73e92b2f2274cb887d96e110",
       abi: [
         {
           type: "constructor",
@@ -2439,7 +2413,14 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "connectDaoToDivine",
+          name: "connectDaoToInvest",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "connectDaoToKnow",
           inputs: [
             {
               name: "diviUuid",
@@ -2458,26 +2439,6 @@ const deployedContracts = {
             },
             {
               name: "willPowerAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "connectDaoToInvest",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "evolveDaoAndDivideLove",
-          inputs: [
-            {
-              name: "randomNumber",
               type: "uint256",
               internalType: "uint256",
             },
@@ -2774,19 +2735,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "totalStableCoin",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -2825,7 +2773,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "vowDaoDivination",
+          name: "vowDaoManifestation",
           inputs: [
             {
               name: "diviUuid",
@@ -2930,7 +2878,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "DaoEvolutionManifestation",
+          name: "DaoEvolutionRepresentation",
           inputs: [
             {
               name: "willId",
@@ -3493,7 +3441,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742014773.json",
+      deploymentFile: "run-1742139777.json",
       deploymentScript: "Deploy.s.sol",
       isProxy: true,
       implementationName: "BaguaDukiDaoContract",
@@ -3747,7 +3695,14 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "connectDaoToDivine",
+          name: "connectDaoToInvest",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "connectDaoToKnow",
           inputs: [
             {
               name: "diviUuid",
@@ -3766,26 +3721,6 @@ const deployedContracts = {
             },
             {
               name: "willPowerAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "connectDaoToInvest",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "evolveDaoAndDivideLove",
-          inputs: [
-            {
-              name: "randomNumber",
               type: "uint256",
               internalType: "uint256",
             },
@@ -4082,19 +4017,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "totalStableCoin",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -4133,7 +4055,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "vowDaoDivination",
+          name: "vowDaoManifestation",
           inputs: [
             {
               name: "diviUuid",
@@ -4238,7 +4160,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "DaoEvolutionManifestation",
+          name: "DaoEvolutionRepresentation",
           inputs: [
             {
               name: "willId",
@@ -5051,7 +4973,14 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "connectDaoToDivine",
+          name: "connectDaoToInvest",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "connectDaoToKnow",
           inputs: [
             {
               name: "diviUuid",
@@ -5070,26 +4999,6 @@ const deployedContracts = {
             },
             {
               name: "willPowerAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "connectDaoToInvest",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "evolveDaoAndDivideLove",
-          inputs: [
-            {
-              name: "randomNumber",
               type: "uint256",
               internalType: "uint256",
             },
@@ -5386,19 +5295,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "totalStableCoin",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -5437,7 +5333,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "vowDaoDivination",
+          name: "vowDaoManifestation",
           inputs: [
             {
               name: "diviUuid",
@@ -5542,7 +5438,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "DaoEvolutionManifestation",
+          name: "DaoEvolutionRepresentation",
           inputs: [
             {
               name: "willId",
@@ -7012,7 +6908,14 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "connectDaoToDivine",
+          name: "connectDaoToInvest",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "connectDaoToKnow",
           inputs: [
             {
               name: "diviUuid",
@@ -7031,26 +6934,6 @@ const deployedContracts = {
             },
             {
               name: "willPowerAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "connectDaoToInvest",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "evolveDaoAndDivideLove",
-          inputs: [
-            {
-              name: "randomNumber",
               type: "uint256",
               internalType: "uint256",
             },
@@ -7347,19 +7230,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "totalStableCoin",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -7398,7 +7268,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "vowDaoDivination",
+          name: "vowDaoManifestation",
           inputs: [
             {
               name: "diviUuid",
@@ -7503,7 +7373,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "DaoEvolutionManifestation",
+          name: "DaoEvolutionRepresentation",
           inputs: [
             {
               name: "willId",
@@ -8316,7 +8186,14 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "connectDaoToDivine",
+          name: "connectDaoToInvest",
+          inputs: [],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "connectDaoToKnow",
           inputs: [
             {
               name: "diviUuid",
@@ -8335,26 +8212,6 @@ const deployedContracts = {
             },
             {
               name: "willPowerAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "connectDaoToInvest",
-          inputs: [],
-          outputs: [],
-          stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "evolveDaoAndDivideLove",
-          inputs: [
-            {
-              name: "randomNumber",
               type: "uint256",
               internalType: "uint256",
             },
@@ -8651,19 +8508,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "totalStableCoin",
-          inputs: [],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "transferOwnership",
           inputs: [
             {
@@ -8702,7 +8546,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "vowDaoDivination",
+          name: "vowDaoManifestation",
           inputs: [
             {
               name: "diviUuid",
@@ -8807,7 +8651,7 @@ const deployedContracts = {
         },
         {
           type: "event",
-          name: "DaoEvolutionManifestation",
+          name: "DaoEvolutionRepresentation",
           inputs: [
             {
               name: "willId",

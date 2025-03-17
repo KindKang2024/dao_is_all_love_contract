@@ -157,10 +157,6 @@ contract BaguaDukiDaoContract is
         emit BaguaDukiDaoBpsChanged(emptyArr, s_dao_bps_arr, block.timestamp);
     }
 
-    function totalStableCoin() external view returns (uint256) {
-        return IERC20(s_stableCoin).balanceOf(address(this));
-    }
-
     function baguaDaoUnitCountArr() external view returns (uint256[8] memory) {
         return s_dao_bps_count_arr;
     }
@@ -219,12 +215,9 @@ contract BaguaDukiDaoContract is
         );
     }
 
-    /**
-     *
-     */
-    function connectDaoToDivine(
+    function connectDaoToKnow(
         bytes16 diviUuid,
-        bytes16 diviWillHash,
+        bytes32 diviWillHash,
         bytes16 diviWillAnswer,
         uint256 willPowerAmount // money amount
     ) external {
@@ -267,7 +260,7 @@ contract BaguaDukiDaoContract is
   
 
     // after verified the divination, the user can vow to the dao
-    function vowDaoDivination(
+    function vowDaoManifestation(
         bytes16 diviUuid,
         KnownStatus knownStatus
     ) external {
@@ -287,7 +280,7 @@ contract BaguaDukiDaoContract is
     }
 
     /**
-     * a way to support, at least 10% of the total project revenue will be shared with the investors
+     * a way to support
      */
     function connectDaoToInvest() external {
         // CHECKS
@@ -478,12 +471,6 @@ contract BaguaDukiDaoContract is
     }
 
     function commonDeductFee(InteractType interactType, uint256 requiredMoney) internal {
-        uint256 allowanceMoney = IERC20(s_stableCoin).allowance(msg.sender, address(this));
-        if (allowanceMoney < requiredMoney) {
-            // console2.log("InsufficientAllowance: allowance < required", allowanceMoney, requiredMoney);
-            revert InsufficientAllowance(interactType, msg.sender, requiredMoney);
-        }
-
         bool success = IERC20(s_stableCoin).transferFrom(msg.sender, address(this), requiredMoney);
 
         // console2.log("CoinReceived, requiredMoney from", success, requiredMoney);
@@ -627,7 +614,7 @@ contract BaguaDukiDaoContract is
         evolveDaoAndDivideLove(randomNumber);
     }
 
-    function evolveDaoAndDivideLove(uint256 randomNumber) public {
+    function evolveDaoAndDivideLove(uint256 randomNumber) internal {
         uint256 balance = IERC20(s_stableCoin).balanceOf(address(this));
 
         if (balance < DAO_START_EVOLVE_AMOUNT) {
@@ -682,7 +669,7 @@ contract BaguaDukiDaoContract is
         // Set the values in batch
         s_dao_fair_drop_arr = daoFairDrops;
 
-        emit DaoEvolutionManifestation(
+        emit DaoEvolutionRepresentation(
             s_lastRandomnessWillId, randomNumber, luckyNumber, s_dao_evolve_round, daoFairDrops, block.timestamp
         );
     }

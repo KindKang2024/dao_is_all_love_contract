@@ -6,15 +6,13 @@ import { IBaguaDukiDao } from "./IBaguaDukiDao.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
 interface IUnstoppableDukiDao is ISharedStructs {
-    function totalStableCoin() external view returns (uint256);
-
     function baguaDaoUnitCountArr() external view returns (uint256[8] memory);
     function baguaDaoFairDropArr() external view returns (DaoFairDrop[8] memory);
     function baguaDaoBpsArr() external view returns (uint256[8] memory);
 
     function buaguaDaoAgg4Me(address user) external view returns (BaguaDaoAgg memory);
 
-    function connectDaoToDivine(
+    function connectDaoToKnow(
         bytes16 diviUuid,
         bytes16 diviWillHash,
         bytes16 diviWillAnswer,
@@ -22,7 +20,7 @@ interface IUnstoppableDukiDao is ISharedStructs {
     ) external;
 
     // after verified the divination, the user can vow to the dao
-    function vowDaoDivination(
+    function vowDaoManifestation(
         bytes16 diviUuid,
         KnownStatus knownStatus
     ) external;

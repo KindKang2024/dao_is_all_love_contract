@@ -26,7 +26,7 @@ interface ISharedStructs is IBaguaDukiDao {
 
     struct Divination {
         KnownStatus knownStatus;
-        bytes16 diviWillHash;
+        bytes32 diviWillHash;
         bytes16 diviWillAnswer;
         uint256 willOfLovePowerAmount;
     }
@@ -68,7 +68,7 @@ interface ISharedStructs is IBaguaDukiDao {
 
     event DaoEvolutionWilling(uint256 willId, uint256 timestamp);
 
-    event DaoEvolutionManifestation(
+    event DaoEvolutionRepresentation(
         uint256 willId,
         uint256 randomMutationNumber,
         uint256 communityLuckyNumber,
