@@ -14,7 +14,7 @@ interface IUnstoppableDukiDao is ISharedStructs {
 
     function connectDaoToKnow(
         bytes16 diviUuid,
-        bytes16 diviWillHash,
+        bytes32 diviWillHash,
         bytes16 diviWillAnswer,
         uint256 willPowerAmount
     ) external;

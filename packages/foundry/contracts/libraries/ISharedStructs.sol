@@ -80,7 +80,7 @@ interface ISharedStructs is IBaguaDukiDao {
     event ConnectDaoEvent(
         address diviner,
         bytes16 diviId,
-        bytes16 diviWillHash,
+        bytes32 diviWillHash,
         uint256 timestamp
     );
     event VowDaoEvent(

@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     MyERC20Mock: {
-      address: "0x82c6d3ed4cd33d8ec1e51d0b5cc1d822eaa0c3dc",
+      address: "0x33b1b5aa9aa4da83a332f0bc5cac6a903fde5d92",
       abi: [
         {
           type: "constructor",
@@ -656,11 +656,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742139777.json",
+      deploymentFile: "run-1742209876.json",
       deploymentScript: "Deploy.s.sol",
     },
     AnyrandMock: {
-      address: "0x05b4cb126885fb10464fdd12666feb25e2563b76",
+      address: "0x19a1c09fe3399c4daaa2c98b936a8e460fc5eaa4",
       abi: [
         {
           type: "function",
@@ -885,11 +885,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742139777.json",
+      deploymentFile: "run-1742209876.json",
       deploymentScript: "Deploy.s.sol",
     },
     BaguaDukiDaoContract: {
-      address: "0x2a264f26859166c5bf3868a54593ee716aebc848",
+      address: "0x581a5b2dbde0de1cb7499a9f18d0750301f86ec3",
       abi: [
         {
           type: "constructor",
@@ -1151,8 +1151,8 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
-              internalType: "bytes16",
+              type: "bytes32",
+              internalType: "bytes32",
             },
             {
               name: "diviWillAnswer",
@@ -1585,9 +1585,9 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
+              type: "bytes32",
               indexed: false,
-              internalType: "bytes16",
+              internalType: "bytes32",
             },
             {
               name: "timestamp",
@@ -2163,11 +2163,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742139777.json",
+      deploymentFile: "run-1742210190.json",
       deploymentScript: "Deploy.s.sol",
     },
     ERC1967Proxy: {
-      address: "0xd04ff4a75edd737a73e92b2f2274cb887d96e110",
+      address: "0xc65d1bb7ad6ba7f6211bf338f458adedf40b9aec",
       abi: [
         {
           type: "constructor",
@@ -2429,8 +2429,8 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
-              internalType: "bytes16",
+              type: "bytes32",
+              internalType: "bytes32",
             },
             {
               name: "diviWillAnswer",
@@ -2863,9 +2863,9 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
+              type: "bytes32",
               indexed: false,
-              internalType: "bytes16",
+              internalType: "bytes32",
             },
             {
               name: "timestamp",
@@ -3441,7 +3441,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742139777.json",
+      deploymentFile: "run-1742210190.json",
       deploymentScript: "Deploy.s.sol",
       isProxy: true,
       implementationName: "BaguaDukiDaoContract",
@@ -3711,8 +3711,8 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
-              internalType: "bytes16",
+              type: "bytes32",
+              internalType: "bytes32",
             },
             {
               name: "diviWillAnswer",
@@ -4145,9 +4145,9 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
+              type: "bytes32",
               indexed: false,
-              internalType: "bytes16",
+              internalType: "bytes32",
             },
             {
               name: "timestamp",
@@ -4989,8 +4989,8 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
-              internalType: "bytes16",
+              type: "bytes32",
+              internalType: "bytes32",
             },
             {
               name: "diviWillAnswer",
@@ -5423,9 +5423,9 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
+              type: "bytes32",
               indexed: false,
-              internalType: "bytes16",
+              internalType: "bytes32",
             },
             {
               name: "timestamp",
@@ -6662,7 +6662,7 @@ const deployedContracts = {
   },
   534352: {
     BaguaDukiDaoContract: {
-      address: "0x581a5b2dbde0de1cb7499a9f18d0750301f86ec3",
+      address: "0x6795a73140e915368c5fe6df321f92815ce931db",
       abi: [
         {
           type: "constructor",
@@ -6924,8 +6924,8 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
-              internalType: "bytes16",
+              type: "bytes32",
+              internalType: "bytes32",
             },
             {
               name: "diviWillAnswer",
@@ -7358,9 +7358,9 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
+              type: "bytes32",
               indexed: false,
-              internalType: "bytes16",
+              internalType: "bytes32",
             },
             {
               name: "timestamp",
@@ -7936,11 +7936,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742051323.json",
+      deploymentFile: "run-1742210432.json",
       deploymentScript: "Deploy.s.sol",
     },
     ERC1967Proxy: {
-      address: "0xc65d1bb7ad6ba7f6211bf338f458adedf40b9aec",
+      address: "0x0b5bac7a3aa6634df8bb2eaaa984c8e41424a23a",
       abi: [
         {
           type: "constructor",
@@ -8202,8 +8202,8 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
-              internalType: "bytes16",
+              type: "bytes32",
+              internalType: "bytes32",
             },
             {
               name: "diviWillAnswer",
@@ -8636,9 +8636,9 @@ const deployedContracts = {
             },
             {
               name: "diviWillHash",
-              type: "bytes16",
+              type: "bytes32",
               indexed: false,
-              internalType: "bytes16",
+              internalType: "bytes32",
             },
             {
               name: "timestamp",
@@ -9214,7 +9214,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1742051323.json",
+      deploymentFile: "run-1742210432.json",
       deploymentScript: "Deploy.s.sol",
       isProxy: true,
       implementationName: "BaguaDukiDaoContract",
