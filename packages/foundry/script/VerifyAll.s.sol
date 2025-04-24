@@ -26,7 +26,10 @@ contract VerifyAll is Script {
     function run() external {
         string memory root = vm.projectRoot();
         string memory path =
-            string.concat(root, "/broadcast/Deploy.s.sol/", vm.toString(block.chainid), "/run-latest.json");
+            // string.concat(root, "/broadcast/Deploy.s.sol/", vm.toString(block.chainid), "/run-latest.json");
+            string.concat(root, "/broadcast/LoveDeploy.s.sol/", vm.toString(block.chainid), "/run-latest.json");
+            // string.concat(root, "/broadcast/DeployUsdtMockContract.s.sol/", vm.toString(block.chainid), "/run-latest.json");
+            // string.concat(root, "/broadcast/Upgrade.s.sol/", vm.toString(block.chainid), "/run-latest.json");
         string memory content = vm.readFile(path);
 
         while (this.nextTransaction(content)) {
@@ -67,6 +70,13 @@ contract VerifyAll is Script {
         inputs[8] = "--watch";
 
         FfiResult memory f = tempVm(address(vm)).tryFfi(inputs);
+
+        // print inputs, add ' ' between each input
+        string memory inputsString = "";
+        for (uint256 i = 0; i < inputs.length; i++) {
+            inputsString = string.concat(inputsString, inputs[i], " ");
+        }
+        console.logString(string.concat("Inputs: ", inputsString));
 
         if (f.stderr.length != 0) {
             console.logString(string.concat("Submitting verification for contract: ", vm.toString(contractAddr)));

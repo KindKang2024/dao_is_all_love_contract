@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../../dependencies/IAnyrand.sol";
-import "../../dependencies/IRandomiserCallbackV3.sol";
+import "@/dependencies/IAnyrand.sol";
+import "@/dependencies/IRandomiserCallbackV3.sol";
 
 /**
  * @title AnyrandMock

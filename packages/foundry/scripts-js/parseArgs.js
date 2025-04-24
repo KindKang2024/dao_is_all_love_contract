@@ -10,7 +10,8 @@ config();
 
 // Get all arguments after the script name
 const args = process.argv.slice(2);
-let fileName = "Deploy.s.sol";
+// let fileName = "Deploy.s.sol";
+let fileName = "duki_in_action/1_knowunknowable_love/LoveDeploy.s.sol";
 let network = "localhost";
 
 // Show help message if --help is provided

@@ -8,7 +8,8 @@ export $(shell sed 's/=.*//' $(ENV_FILE))
 
 .PHONY: build deploy generate-abis verify-keystore account chain compile flatten fork format lint test verify
 
-DEPLOY_SCRIPT ?= script/Deploy.s.sol
+# DEPLOY_SCRIPT ?= script/Deploy.s.sol
+DEPLOY_SCRIPT ?= script/duki_in_action/1_knowunknowable_love/LoveDeploy.s.sol
 
 # setup wallet for anvil
 setup-anvil-wallet:
