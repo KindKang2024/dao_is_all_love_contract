@@ -53,4 +53,6 @@ library DukiDaoConstants {
 
     uint64 constant LIFE_TIME_EXPIRE_SECONDS = type(uint64).max;
 
+    uint256 constant MAX_POWER_AMOUNT = 1000 * ONE_DOLLAR_BASE;
+
 } 

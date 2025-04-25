@@ -49,11 +49,30 @@ interface ILoveBaguaDao is IDukiBaguaDao {
         DukiDaoTypes.CommunityParticipation participation;
     }
 
-    function connectDaoToKnow(bytes16 diviUuid, bytes32 diviWillHash, bytes16 diviWillAnswer, uint256 willPowerAmount)
-        external;
+    // using permit
+    function connectDaoToKnow(
+        bytes16 diviUuid,
+        bytes32 diviWillHash,
+        bytes16 diviWillAnswer,
+        uint256 willPowerAmount,
+        // Permit parameters
+        uint256 permitDeadline,
+        uint8 permitV,
+        bytes32 permitR,
+        bytes32 permitS
+    ) external;
 
     // after verified the divination, the user can vow to the dao
-    function vowDaoManifestation(bytes16 diviUuid, KnownStatus knownStatus, uint256 vowPowerAmount) external;
+    function vowDaoManifestation(
+        bytes16 diviUuid,
+        KnownStatus knownStatus,
+        uint256 vowPowerAmount,
+        // Permit parameters
+        uint256 permitDeadline,
+        uint8 permitV,
+        bytes32 permitR,
+        bytes32 permitS
+    ) external;
 
     function baguaDaoAgg4Me(address user) external view returns (BaguaDaoAgg memory);
 

@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     AnyrandMock: {
-      address: "0xe1da8919f262ee86f9be05059c9280142cf23f48",
+      address: "0x12975173b87f7595ee45dffb2ab812ece596bf84",
       abi: [
         {
           type: "function",
@@ -232,11 +232,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1745230051.json",
+      deploymentFile: "run-1745573384.json",
       deploymentScript: "LoveDeploy.s.sol",
     },
     MyERC20Mock: {
-      address: "0xe1aa25618fa0c7a1cfdab5d6b456af611873b629",
+      address: "0xf7cd8fa9b94db2aa972023b379c7f72c65e4de9d",
       abi: [
         {
           type: "constructor",
@@ -885,11 +885,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1745230051.json",
+      deploymentFile: "run-1745573384.json",
       deploymentScript: "LoveDeploy.s.sol",
     },
     LoveDaoContract: {
-      address: "0x581a5b2dbde0de1cb7499a9f18d0750301f86ec3",
+      address: "0x82c6d3ed4cd33d8ec1e51d0b5cc1d822eaa0c3dc",
       abi: [
         {
           type: "constructor",
@@ -1199,6 +1199,26 @@ const deployedContracts = {
               name: "willPowerAmount",
               type: "uint256",
               internalType: "uint256",
+            },
+            {
+              name: "permitDeadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "permitV",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "permitR",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "permitS",
+              type: "bytes32",
+              internalType: "bytes32",
             },
           ],
           outputs: [],
@@ -1548,6 +1568,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -1861,6 +1901,11 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "ExcessiveAmount",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "FailedCall",
           inputs: [],
         },
@@ -2081,11 +2126,11 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1745409484.json",
-      deploymentScript: "LoveDeploy.s.sol",
+      deploymentFile: "run-1745573395.json",
+      deploymentScript: "Upgrade.s.sol",
     },
     ERC1967Proxy: {
-      address: "0xc65d1bb7ad6ba7f6211bf338f458adedf40b9aec",
+      address: "0x196dbcbb54b8ec4958c959d8949ebfe87ac2aaaf",
       abi: [
         {
           type: "constructor",
@@ -2395,6 +2440,26 @@ const deployedContracts = {
               name: "willPowerAmount",
               type: "uint256",
               internalType: "uint256",
+            },
+            {
+              name: "permitDeadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "permitV",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "permitR",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "permitS",
+              type: "bytes32",
+              internalType: "bytes32",
             },
           ],
           outputs: [],
@@ -2744,6 +2809,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -3057,6 +3142,11 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "ExcessiveAmount",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "FailedCall",
           inputs: [],
         },
@@ -3277,7 +3367,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1745409484.json",
+      deploymentFile: "run-1745573384.json",
       deploymentScript: "LoveDeploy.s.sol",
       isProxy: true,
       implementationName: "LoveDaoContract",
@@ -4249,6 +4339,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "permitDeadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "permitV",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "permitR",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "permitS",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -4597,6 +4707,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -4906,6 +5036,11 @@ const deployedContracts = {
         {
           type: "error",
           name: "ERC1967NonPayable",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ExcessiveAmount",
           inputs: [],
         },
         {
@@ -5445,6 +5580,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "permitDeadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "permitV",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "permitR",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "permitS",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -5793,6 +5948,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -6106,6 +6281,11 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "ExcessiveAmount",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "FailedCall",
           inputs: [],
         },
@@ -6334,7 +6514,7 @@ const deployedContracts = {
   },
   534352: {
     LoveDaoContract: {
-      address: "0x909a666c15050bbc4bff61e7411273df655858cc",
+      address: "0x0c78b02074af6b5c6af0a92d24118c41a1e74814",
       abi: [
         {
           type: "constructor",
@@ -6645,6 +6825,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "permitDeadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "permitV",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "permitR",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "permitS",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -6993,6 +7193,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -7306,6 +7526,11 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "ExcessiveAmount",
+          inputs: [],
+        },
+        {
+          type: "error",
           name: "FailedCall",
           inputs: [],
         },
@@ -7526,7 +7751,7 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deploymentFile: "run-1745475152.json",
+      deploymentFile: "run-1745582852.json",
       deploymentScript: "Upgrade.s.sol",
     },
     ERC1967Proxy: {
@@ -7841,6 +8066,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "permitDeadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "permitV",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "permitR",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "permitS",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -8189,6 +8434,26 @@ const deployedContracts = {
               type: "uint256",
               internalType: "uint256",
             },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
           ],
           outputs: [],
           stateMutability: "nonpayable",
@@ -8498,6 +8763,11 @@ const deployedContracts = {
         {
           type: "error",
           name: "ERC1967NonPayable",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "ExcessiveAmount",
           inputs: [],
         },
         {

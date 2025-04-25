@@ -114,4 +114,5 @@ library DukiDaoTypes {
     error RefundFailed();
     error NotQualifiedForClaim(uint256 roleSeq); // Message sender is not the vip supporter
     error InsufficientAllowance(InteractType t, address src, uint256 amount);
+    error ExcessiveAmount();
 }

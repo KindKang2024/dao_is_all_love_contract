@@ -8,6 +8,7 @@ import "../contracts/libraries/DukiDaoTypes.sol";
 import "../contracts/libraries/DukiDaoConstants.sol";
 import "../contracts/duki_in_action/1_knowunknowable_love/LoveDaoContract.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 /**
@@ -82,7 +83,21 @@ contract BaguaDukiDaoTest is StdCheats, Test {
     uint256 constant INVESTMENT_AMOUNT = DukiDaoConstants.BASIC_INVEST_AMOUNT;
     uint256 constant DAO_INITIAL_FUNDS = 30_000 * ONE_TOKEN;
 
+    // For permit testing
+    mapping(address => uint256) private signerKeys;
+    bytes32 PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
+
     function setUp() public {
+        // Create consistent private keys for our test accounts
+        uint256 community1PrivateKey = 1;
+        uint256 community2PrivateKey = 2;
+        // Generate corresponding addresses
+        community1 = vm.addr(community1PrivateKey);
+        community2 = vm.addr(community2PrivateKey);
+        // Store keys for signature generation
+        signerKeys[community1] = community1PrivateKey;
+        signerKeys[community2] = community2PrivateKey;
+
         // Deploy stable coin and mint tokens
         vm.startPrank(owner);
         stableCoin = new MyERC20Mock("USDT Mock", "USDT", owner, INITIAL_BALANCE);
@@ -132,10 +147,57 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         stableCoin.transfer(community1, 500 * ONE_TOKEN);
         stableCoin.transfer(community2, 500 * ONE_TOKEN);
         vm.stopPrank();
+    }
 
-        // block evolve to 2 (or desired start block)
-        // vm.roll(block.number + 2);
-        // console2.log("block.number", block.number);
+    // Helper function to create valid permit data for tests
+    function _createPermitData(address owner, uint256 amount) internal returns (uint256 deadline, uint8 v, bytes32 r, bytes32 s) {
+        // Set deadline 1 hour in the future
+        deadline = block.timestamp + 3600;
+        
+        // Get the private key for this address
+        uint256 privateKey = signerKeys[owner];
+        if (privateKey == 0) {
+            revert("No private key found for this address");
+        }
+        
+        // Get the nonce from the token contract
+        uint256 nonce = MyERC20Mock(address(stableCoin)).nonces(owner);
+        
+        // Create the permit digest
+        bytes32 digest = _createPermitDigest(owner, address(daoContract), amount, nonce, deadline);
+        
+        // Sign the digest with the private key
+        (v, r, s) = vm.sign(privateKey, digest);
+        
+        return (deadline, v, r, s);
+    }
+    
+    // Helper to create the correct permit digest
+    function _createPermitDigest(
+        address owner, 
+        address spender, 
+        uint256 value, 
+        uint256 nonce, 
+        uint256 deadline
+    ) internal view returns (bytes32) {
+        bytes32 domainSeparator = MyERC20Mock(address(stableCoin)).DOMAIN_SEPARATOR();
+        
+        return keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                domainSeparator,
+                keccak256(
+                    abi.encode(
+                        PERMIT_TYPEHASH,
+                        owner,
+                        spender,
+                        value,
+                        nonce,
+                        deadline
+                    )
+                )
+            )
+        );
     }
 
     // INITIALIZATION TESTS
@@ -196,13 +258,15 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Setup
         vm.startPrank(community1);
         uint256 loveAmount = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount);
+        
+        // Generate mock permit data
+        (uint256 deadline, uint8 v, bytes32 r, bytes32 s) = _createPermitData(community1, loveAmount);
 
         // Action
         bytes16 diviUuid = bytes16("test-uuid-1234");
         bytes32 diviWillHash = bytes32("test-will-hash-1234");
         bytes16 diviWillAnswer = bytes16("test-answer-1234");
-        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount, deadline, v, r, s);
 
         // Check community count increased
         uint256[8] memory unitCounts = daoContract.baguaDaoUnitCountArr();
@@ -214,11 +278,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         assertEq(agg.participation.participantAmount, loveAmount);
 
         // Add more love
-        stableCoin.approve(address(daoContract), loveAmount);
+        (deadline, v, r, s) = _createPermitData(community1, loveAmount);
         bytes16 diviUuid2 = bytes16("test-uuid-5678");
         bytes32 diviWillHash2 = bytes32("test-will-hash-5678");
         bytes16 diviWillAnswer2 = bytes16("test-answer-5678");
-        daoContract.connectDaoToKnow(diviUuid2, diviWillHash2, diviWillAnswer2, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid2, diviWillHash2, diviWillAnswer2, loveAmount, deadline, v, r, s);
 
         // Check count still same but amount increased
         unitCounts = daoContract.baguaDaoUnitCountArr();
@@ -236,11 +300,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Add a community participant first
         vm.startPrank(community1);
         uint256 loveAmount = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount);
+        (uint256 deadline, uint8 v, bytes32 r, bytes32 s) = _createPermitData(community1, loveAmount);
         bytes16 diviUuid = bytes16("test-uuid-1234");
         bytes32 diviWillHash = bytes32("test-will-hash-1234");
         bytes16 diviWillAnswer = bytes16("test-answer-1234");
-        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount, deadline, v, r, s);
         vm.stopPrank();
 
         // First evolve the DAO
@@ -281,11 +345,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Add a community participant first
         vm.startPrank(community1);
         uint256 loveAmount = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount);
+        (uint256 deadline, uint8 v, bytes32 r, bytes32 s) = _createPermitData(community1, loveAmount);
         bytes16 diviUuid = bytes16("test-uuid-1234");
         bytes32 diviWillHash = bytes32("test-will-hash-1234");
         bytes16 diviWillAnswer = bytes16("test-answer-1234");
-        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount, deadline, v, r, s);
         vm.stopPrank();
 
         // First evolve the DAO - Must send value
@@ -337,11 +401,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Add a community participant first
         vm.startPrank(community1);
         uint256 loveAmount = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount);
+        (uint256 deadline, uint8 v, bytes32 r, bytes32 s) = _createPermitData(community1, loveAmount);
         bytes16 diviUuid = bytes16("test-uuid-1234");
         bytes32 diviWillHash = bytes32("test-will-hash-1234");
         bytes16 diviWillAnswer = bytes16("test-answer-1234");
-        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount, deadline, v, r, s);
         vm.stopPrank();
 
         // Evolve with community1 as winner
@@ -372,11 +436,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Setup - add community member
         vm.startPrank(community1);
         uint256 loveAmount = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount);
+        (uint256 deadline, uint8 v, bytes32 r, bytes32 s) = _createPermitData(community1, loveAmount);
         bytes16 diviUuid = bytes16("test-uuid-1234");
         bytes32 diviWillHash = bytes32("test-will-hash-1234");
         bytes16 diviWillAnswer = bytes16("test-answer-1234");
-        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount, deadline, v, r, s);
         vm.stopPrank();
 
         // Evolve with community1 as winner
@@ -411,11 +475,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Non-winner can't claim
         vm.startPrank(community2);
         uint256 loveAmount2 = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount2);
+        (deadline, v, r, s) = _createPermitData(community2, loveAmount2);
         bytes16 diviUuid2 = bytes16("test-uuid-5678");
         bytes32 diviWillHash2 = bytes32("test-will-hash-5678");
         bytes16 diviWillAnswer2 = bytes16("test-answer-5678");
-        daoContract.connectDaoToKnow(diviUuid2, diviWillHash2, diviWillAnswer2, loveAmount2);
+        daoContract.connectDaoToKnow(diviUuid2, diviWillHash2, diviWillAnswer2, loveAmount2, deadline, v, r, s);
 
         vm.expectRevert(abi.encodeWithSelector(DukiDaoTypes.NotCommunityLotteryWinner.selector));
         daoContract.claim5Love_CommunityLotteryFairDrop();
@@ -427,11 +491,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Add a community participant first
         vm.startPrank(community1);
         uint256 loveAmount = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount);
+        (uint256 deadline, uint8 v, bytes32 r, bytes32 s) = _createPermitData(community1, loveAmount);
         bytes16 diviUuid = bytes16("test-uuid-1234");
         bytes32 diviWillHash = bytes32("test-will-hash-1234");
         bytes16 diviWillAnswer = bytes16("test-answer-1234");
-        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount, deadline, v, r, s);
         vm.stopPrank();
 
         // First evolve the DAO
@@ -487,11 +551,11 @@ contract BaguaDukiDaoTest is StdCheats, Test {
         // Add a community participant first
         vm.startPrank(community1);
         uint256 loveAmount = 100 * ONE_TOKEN;
-        stableCoin.approve(address(daoContract), loveAmount);
+        (uint256 deadline, uint8 v, bytes32 r, bytes32 s) = _createPermitData(community1, loveAmount);
         bytes16 diviUuid = bytes16("test-uuid-1234");
         bytes32 diviWillHash = bytes32("test-will-hash-1234");
         bytes16 diviWillAnswer = bytes16("test-answer-1234");
-        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount);
+        daoContract.connectDaoToKnow(diviUuid, diviWillHash, diviWillAnswer, loveAmount, deadline, v, r, s);
         vm.stopPrank();
 
         // First evolution
