@@ -1,3 +1,6 @@
+# Notice
+Work has been achieved and moved to https://github.com/almworld for maintenance and future development.
+
 # 🏗 Scaffold-ETH 2
 
 <h4 align="center">
